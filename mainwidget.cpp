@@ -12,11 +12,14 @@
 // ***************************************************************************
 #include "mainwidget.h"
 #include "ui_mainwidget.h"
+#include "mouseeventfilter.h"
 
 #include <QMouseEvent>
 #include <QDebug>
 #include <QTimer>
 #include <QSettings>
+#include <QDateTime>
+#include <QGraphicsScene>
 
 #define CFG_GRP_WINDOW  "TWindow"
 #define CFG_GEOMETRY    "geometry"
@@ -32,9 +35,21 @@ MainWidget::MainWidget(QWidget *parent)
     , ui(new Ui::MainWidget)
     , m_mouseResizing(false)
     , m_mouseMoving(false)
+    , m_scene(nullptr)
 {
     ui->setupUi(this);
+    m_scene = ui->graphicsView->scene();
+    if (m_scene == nullptr) {
+        qDebug() << "creation of a new QGraphicsSene is required";
+        m_scene = new QGraphicsScene;
+        ui->graphicsView->setScene(m_scene);
+    }
     setWindowFlags(wf);
+    // Installation des Ereignisfilters
+    MouseEventFilter* filter = new MouseEventFilter(this);
+    ui->graphicsView->viewport()->installEventFilter(filter);
+
+    createCalendar(QDate::currentDate().year());
     QTimer::singleShot(1, this, SLOT(updateGeometry()));
 }
 
@@ -66,6 +81,22 @@ void MainWidget::updateGeometry()
     qDebug() << "--- MainWidget::updateGeometry()";
 }
 
+void MainWidget::createCalendar(int year)
+{
+    QPen pen;
+    QBrush brush;
+
+    // draw main frame
+    pen.setColor(Qt::black);
+    pen.setStyle(Qt::SolidLine);
+    pen.setWidth(3);
+
+    brush.setColor(Qt::white);
+    brush.setStyle(Qt::SolidPattern);
+
+    m_scene->addRect(0, 0, 798, 1090, pen, brush);
+}
+
 void MainWidget::mousePressEvent(QMouseEvent *event)
 {
     qDebug() << "+++ MainWidget::mousePressEvent(" << event->pos() << "(" << event->globalPosition() << ") /" << event->buttons() << ")";
@@ -84,19 +115,25 @@ void MainWidget::mousePressEvent(QMouseEvent *event)
     default:
         break;
     }
+    qDebug() << "m_mouseMoving=" << m_mouseMoving;
+    qDebug() << "m_mouseResizing=" << m_mouseResizing;
     qDebug() << "--- MainWidget::mousePressEvent()";
 }
 
 void MainWidget::mouseMoveEvent(QMouseEvent *event)
 {
     qDebug() << "+++ MainWidget::mouseMoveEvent(" << event->pos() << "/" << event->buttons() << ")";
+    qDebug() << "m_mouseMoving=" << m_mouseMoving;
+    qDebug() << "m_mouseResizing=" << m_mouseResizing;
     if (m_mouseMoving) {
         QPointF pt = event->globalPosition()-m_startPosition;
         qDebug() << "moving to" << pt;
         move(pt.toPoint());
     }
     if (m_mouseResizing) {
-        resize(m_startSize.width() + (event->pos().x() - m_startPosition.x()), m_startSize.height() + (event->pos().y() - m_startPosition.y()));
+        QSize sz = QSize(m_startSize.width() + (event->pos().x() - m_startPosition.x()), m_startSize.height() + (event->pos().y() - m_startPosition.y()));
+        qDebug() << "resizing to" << sz;
+        resize(sz);
     }
     qDebug() << "--- MainWidget::mouseMoveEvent()";
 }

@@ -24,11 +24,13 @@ DEFINES += APP_DOMAIN=\\\"t2ft.de\\\"
 SOURCES += \
     main.cpp \
     mainwidget.cpp \
+    mouseeventfilter.cpp \
     tapp.cpp \
     tmessagehandler.cpp
 
 HEADERS += \
     mainwidget.h \
+    mouseeventfilter.h \
     tapp.h \
     tmessagehandler.h \
     tmsghandler_main.h

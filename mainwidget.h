@@ -21,6 +21,8 @@ class MainWidget;
 }
 QT_END_NAMESPACE
 
+class QGraphicsScene;
+
 class MainWidget : public QWidget
 {
     Q_OBJECT
@@ -29,21 +31,25 @@ public:
     MainWidget(QWidget *parent = nullptr);
     ~MainWidget();
 
-protected:
-    void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+
+protected:
+    void mousePressEvent(QMouseEvent *event) override;
     void closeEvent(QCloseEvent *event) override;
 
 private slots:
     void updateGeometry();
 
 private:
+    void createCalendar(int year);
+
     Ui::MainWidget *ui;
 
     bool            m_mouseResizing;
     bool            m_mouseMoving;
     QSizeF          m_startSize;
     QPointF         m_startPosition;
+    QGraphicsScene  *m_scene;
 };
 #endif // MAINWIDGET_H
