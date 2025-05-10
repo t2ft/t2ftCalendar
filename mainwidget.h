@@ -43,6 +43,7 @@ private slots:
 
 private:
     void createCalendar(int year);
+    QPointF centered(const QRectF &a, const QRectF &b);
 
     Ui::MainWidget *ui;
 

@@ -22,6 +22,7 @@ DEFINES += APP_NAME=\\\"$$QMAKE_TARGET_PRODUCT\\\"
 DEFINES += APP_DOMAIN=\\\"t2ft.de\\\"
 
 SOURCES += \
+    calendarday.cpp \
     main.cpp \
     mainwidget.cpp \
     mouseeventfilter.cpp \
@@ -29,6 +30,7 @@ SOURCES += \
     tmessagehandler.cpp
 
 HEADERS += \
+    calendarday.h \
     mainwidget.h \
     mouseeventfilter.h \
     tapp.h \
