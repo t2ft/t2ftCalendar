@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/corner.svg</file>
+        <file>res/refresh_black_48dp.svg</file>
+    </qresource>
+</RCC>
