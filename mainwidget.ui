@@ -30,7 +30,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QGraphicsView" name="graphicsView">
+    <widget class="ZoomView" name="graphicsView">
      <property name="verticalScrollBarPolicy">
       <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
      </property>
@@ -44,6 +44,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ZoomView</class>
+   <extends>QGraphicsView</extends>
+   <header>zoomview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

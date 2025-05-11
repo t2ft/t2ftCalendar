@@ -29,7 +29,8 @@ SOURCES += \
     publicholydays.cpp \
     schoolvacations.cpp \
     tapp.cpp \
-    tmessagehandler.cpp
+    tmessagehandler.cpp \
+    zoomview.cpp
 
 HEADERS += \
     calendarday.h \
@@ -39,7 +40,8 @@ HEADERS += \
     schoolvacations.h \
     tapp.h \
     tmessagehandler.h \
-    tmsghandler_main.h
+    tmsghandler_main.h \
+    zoomview.h
 
 FORMS += \
     mainwidget.ui
