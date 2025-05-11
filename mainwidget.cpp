@@ -78,7 +78,7 @@ MainWidget::MainWidget(QWidget *parent)
     m_timerUpdate = new QTimer(this);
     connect(m_timerUpdate, &QTimer::timeout, this, &MainWidget::updateCalendar);
 #ifdef QT_DEBUG
-    m_timerUpdate->start(50);  // run every 50ms for faster debugging
+    m_timerUpdate->start(3000);  // run every 50ms for faster debugging
 #else
     m_timerUpdate->start(3600000);  // run every hour
 #endif
@@ -324,7 +324,7 @@ void MainWidget::onReplyFinished(QNetworkReply *reply)
             rc2.moveTop(rc2.bottom()+2);
             date = date.addDays(1);
         }
-        updateCalendarDaily(date);
+        updateCalendarDaily(m_workDate);
     }
     qDebug() << "--- MainWidget::onReplyFinished()";
 }
