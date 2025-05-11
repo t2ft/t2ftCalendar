@@ -14,7 +14,7 @@
 #define MAINWIDGET_H
 
 #include <QWidget>
-
+#include <QDate>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -47,6 +47,7 @@ protected:
 private slots:
     void updateGeometry();
     void onReplyFinished(QNetworkReply *reply);
+    void updateCalendar();
 
 private:
     typedef enum {
@@ -71,8 +72,9 @@ private:
     QList<CalendarDay*>         m_days;
     QNetworkAccessManager       *m_accessManager;
     RequestState                m_requestState;
-    int                         m_year;
     PublicHolidays              *m_holidays;
     SchoolVacations             *m_vacations;
+    QTimer                      *m_timerUpdate;
+    QDate                       m_currentDate;
 };
 #endif // MAINWIDGET_H
