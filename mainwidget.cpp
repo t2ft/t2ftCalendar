@@ -123,7 +123,7 @@ void MainWidget::createCalendar()
     pen.setColor(Qt::black);
     pen.setStyle(Qt::SolidLine);
     pen.setWidth(3);
-    brush.setColor(Qt::white);
+    brush.setColor(QColor("#E6E6E6"));
     brush.setStyle(Qt::SolidPattern);
     m_scene->addRect(0, 0, W, H, pen, brush);
 
@@ -181,9 +181,6 @@ void MainWidget::updateCalendar()
         if (m_workDate.year() != m_currentDate.year()) {
             qDebug() << "  HAPPY NEW YEAR !";
             updateCalendarYearly(m_workDate);
-#ifdef QT_DEBUG
-            m_timerUpdate->setInterval(1000);
-#endif
         } else {
             if (m_workDate.day() != m_currentDate.day()) {
                 //qDebug() << "  welcome to another day";

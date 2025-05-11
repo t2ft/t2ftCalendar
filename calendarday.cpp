@@ -72,7 +72,7 @@ CalendarDay::CalendarDay(const QDate &date, const QRectF &rect, const QString &h
             } else if (isSaturday) {
                 m_brushBackground.setColor(QColor("#FFFFCC"));
             } else {
-                m_brushBackground.setStyle(Qt::NoBrush);
+                m_brushBackground.setColor(Qt::white);
             }
         } else {
             // holiday
