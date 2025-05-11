@@ -58,8 +58,8 @@ private:
     } RequestState;
 
     void createCalendar();
-    void updateCalendarYearly();
-    void updateCalendarDaily();
+    void updateCalendarYearly(const QDate &date);
+    void updateCalendarDaily(const QDate &date);
     QPointF centered(const QRectF &a, const QRectF &b);
 
     Ui::MainWidget *ui;
@@ -76,5 +76,6 @@ private:
     SchoolVacations             *m_vacations;
     QTimer                      *m_timerUpdate;
     QDate                       m_currentDate;
+    QDate                       m_workDate;
 };
 #endif // MAINWIDGET_H

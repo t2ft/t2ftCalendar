@@ -18,11 +18,14 @@ SchoolVacations::SchoolVacations(const QJsonArray &dates)
     : m_valid(false)
 {
     bool allValid = true;
+    int n=0;
     for (const auto &i : dates) {
         QJsonObject o = i.toObject();
         m_vacations.append(Vacation(o["start"].toString(), o["end"].toString(), o["name"].toString()));
         allValid &= m_vacations.last().isValid();
+        ++n;
     }
+    qDebug() << n << " vacations added, all valid =" << allValid;
     m_valid = allValid;
 }
 

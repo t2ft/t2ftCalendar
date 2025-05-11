@@ -39,7 +39,7 @@ private:
 class PublicHolidays
 {
 public:
-    PublicHolidays(const QJsonObject &dates);
+    PublicHolidays(const QJsonObject &dates, const QDate &currentDate);
 
     bool isHoliday(const QDate &date, QString &name, bool &isPublic) const;
     bool allValid() const;

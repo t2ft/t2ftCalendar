@@ -13,13 +13,13 @@
 #include "publicholydays.h"
 #include <QJsonObject>
 
-PublicHolidays::PublicHolidays(const QJsonObject &dates)
+PublicHolidays::PublicHolidays(const QJsonObject &dates, const QDate &currentDate)
     : m_valid(false)
 {
     bool allValid = true;
     QDate date;
     QJsonObject::const_iterator i = dates.constBegin();
-    int year = QDate::currentDate().year();
+    int year = currentDate.year();
     while (i!=dates.constEnd()) {
         QString name = i.key();
         QString dateString = i.value().toObject()["datum"].toString();

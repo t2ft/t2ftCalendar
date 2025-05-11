@@ -81,7 +81,6 @@ CalendarDay::CalendarDay(const QDate &date, const QRectF &rect, const QString &h
     }
     m_penText.setStyle(Qt::SolidLine);
     m_penText.setColor(isPublicHoliday ? Qt::red : Qt::black);
-    updateDay();
 }
 
 
@@ -121,9 +120,9 @@ void CalendarDay::paint(QPainter* painter, const QStyleOptionGraphicsItem* optio
     }
 }
 
-void CalendarDay::updateDay()
+void CalendarDay::updateDay(const QDate &date)
 {
-    if (m_date==QDate::currentDate()) {
+    if (m_date==date) {
         m_penBorder.setStyle(Qt::SolidLine);
         m_penBorder.setColor(QColor("#FF0000"));
         m_penBorder.setWidth(5);
