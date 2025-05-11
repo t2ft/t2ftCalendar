@@ -15,6 +15,7 @@
 
 #include <QWidget>
 
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWidget;
@@ -22,6 +23,11 @@ class MainWidget;
 QT_END_NAMESPACE
 
 class QGraphicsScene;
+class CalendarDay;
+class QNetworkAccessManager;
+class QNetworkReply;
+class SchoolVacations;
+class PublicHolidays;
 
 class MainWidget : public QWidget
 {
@@ -40,17 +46,33 @@ protected:
 
 private slots:
     void updateGeometry();
+    void onReplyFinished(QNetworkReply *reply);
 
 private:
-    void createCalendar(int year);
+    typedef enum {
+        RequestIdle,
+        RequestLastYearsVacations,
+        RequestThisYearsVacations,
+        RequestHolidays
+    } RequestState;
+
+    void createCalendar();
+    void updateCalendarYearly();
+    void updateCalendarDaily();
     QPointF centered(const QRectF &a, const QRectF &b);
 
     Ui::MainWidget *ui;
 
-    bool            m_mouseResizing;
-    bool            m_mouseMoving;
-    QSizeF          m_startSize;
-    QPointF         m_startPosition;
-    QGraphicsScene  *m_scene;
+    bool                        m_mouseResizing;
+    bool                        m_mouseMoving;
+    QSizeF                      m_startSize;
+    QPointF                     m_startPosition;
+    QGraphicsScene              *m_scene;
+    QList<CalendarDay*>         m_days;
+    QNetworkAccessManager       *m_accessManager;
+    RequestState                m_requestState;
+    int                         m_year;
+    PublicHolidays              *m_holidays;
+    SchoolVacations             *m_vacations;
 };
 #endif // MAINWIDGET_H

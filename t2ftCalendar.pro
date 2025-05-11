@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -26,6 +26,8 @@ SOURCES += \
     main.cpp \
     mainwidget.cpp \
     mouseeventfilter.cpp \
+    publicholydays.cpp \
+    schoolvacations.cpp \
     tapp.cpp \
     tmessagehandler.cpp
 
@@ -33,6 +35,8 @@ HEADERS += \
     calendarday.h \
     mainwidget.h \
     mouseeventfilter.h \
+    publicholydays.h \
+    schoolvacations.h \
     tapp.h \
     tmessagehandler.h \
     tmsghandler_main.h

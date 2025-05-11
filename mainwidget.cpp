@@ -14,6 +14,8 @@
 #include "ui_mainwidget.h"
 #include "mouseeventfilter.h"
 #include "calendarday.h"
+#include "schoolvacations.h"
+#include "publicholydays.h"
 
 #include <QMouseEvent>
 #include <QDebug>
@@ -22,6 +24,12 @@
 #include <QDate>
 #include <QGraphicsScene>
 #include <QGraphicsSimpleTextItem>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QUrl>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 
 #define CFG_GRP_WINDOW  "TWindow"
 #define CFG_GEOMETRY    "geometry"
@@ -38,7 +46,12 @@ MainWidget::MainWidget(QWidget *parent)
     , m_mouseResizing(false)
     , m_mouseMoving(false)
     , m_scene(nullptr)
+    , m_accessManager(nullptr)
+    , m_requestState(RequestIdle)
+    , m_holidays(nullptr)
+    , m_vacations(nullptr)
 {
+    m_year = QDate::currentDate().year();
     ui->setupUi(this);
     m_scene = ui->graphicsView->scene();
     if (m_scene == nullptr) {
@@ -50,14 +63,15 @@ MainWidget::MainWidget(QWidget *parent)
     // Installation des Ereignisfilters
     MouseEventFilter* filter = new MouseEventFilter(this);
     ui->graphicsView->viewport()->installEventFilter(filter);
-
-    createCalendar(QDate::currentDate().year());
+    createCalendar();
     QTimer::singleShot(1, this, SLOT(updateGeometry()));
 }
 
 MainWidget::~MainWidget()
 {
     delete ui;
+    delete m_vacations;
+    delete m_holidays;
 }
 
 void MainWidget::closeEvent(QCloseEvent *event)
@@ -83,7 +97,7 @@ void MainWidget::updateGeometry()
     qDebug() << "--- MainWidget::updateGeometry()";
 }
 
-void MainWidget::createCalendar(int year)
+void MainWidget::createCalendar()
 {
     const QString monthName[12] = { "Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez" };
     const int H = 1090;
@@ -93,6 +107,8 @@ void MainWidget::createCalendar(int year)
     QFont font;
     QRectF rc1, rc2;
     QGraphicsSimpleTextItem *t;
+
+    m_year = QDate::currentDate().year();
 
     // draw main frame
     pen.setColor(Qt::black);
@@ -141,29 +157,138 @@ void MainWidget::createCalendar(int year)
         rc2.moveTop(rc2.bottom()-pen.widthF());
     }
 
+    delete m_holidays;
+    m_holidays = nullptr;
+
+    delete m_vacations;
+    m_vacations = nullptr;
+
+    m_accessManager = new QNetworkAccessManager(this);
+    connect(m_accessManager, &QNetworkAccessManager::finished, this, &MainWidget::onReplyFinished);
+    m_requestState = RequestLastYearsVacations;
+    qDebug() << "*** requesting school holidays";
+    m_accessManager->get(QNetworkRequest(QUrl(QString("https://ferien-api.de/api/v1/holidays/BY/%1").arg(m_year-1))));
+}
+
+void MainWidget::onReplyFinished(QNetworkReply *reply)
+{
+    if (reply) {
+        QByteArray data = reply->readAll();
+        if (!data.isEmpty()) {
+            //qDebug() << data;
+            QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
+            switch (m_requestState) {
+            case RequestLastYearsVacations:
+                // process data from last year, wich is required to get christmas holidays right
+                qDebug() << "*** last years holidays received:";
+                m_vacations = new SchoolVacations(jsonDoc.array());
+                // request school vacazions for this year next
+                m_requestState = RequestThisYearsVacations;
+                m_accessManager->get(QNetworkRequest(QUrl(QString("https://ferien-api.de/api/v1/holidays/BY/%1").arg(m_year))));
+                break;
+            case RequestThisYearsVacations:
+                // process data for this year
+                qDebug() << "*** this years holidays received:";
+                if (m_vacations!=nullptr) {
+                    *m_vacations += SchoolVacations(jsonDoc.array());
+                    const int n = m_vacations->size();
+                    for (int i=0; i<n; ++i) {
+                        qDebug() << (*m_vacations)[i].toString();
+                    }
+                    // request public holidays next
+                    m_requestState = RequestHolidays;
+                    qDebug() << "*** requesting public holidays";
+                    m_accessManager->get(QNetworkRequest(QUrl(QString("https://feiertage-api.de/api/?jahr=%1&nur_land=BY").arg(m_year))));
+                } else {
+                    qWarning() << "!!! m_vacations is a nullptr";
+                }
+                break;
+            case RequestHolidays:
+                // process data
+                qDebug() << "*** public holidays received:";
+                m_holidays = new PublicHolidays(jsonDoc.object());
+                if (m_holidays!=nullptr) {
+                    const int n = m_holidays->size();
+                    for (int i=0; i<n; ++i) {
+                        qDebug() << (*m_holidays)[i].toString();
+                    }
+                } else {
+                    qWarning() << "!!! m_holidays is a nullptr";
+                }
+                // no more requests
+                m_requestState = RequestIdle;
+                break;
+            default:
+                qWarning() << "!!! unexpected reply state";
+                m_requestState = RequestIdle;
+                break;
+            }
+        } else {
+            qWarning() << "!!! no data replied: " << reply->errorString();
+            m_requestState = RequestIdle;
+        }
+    } else {
+        qWarning() << "!!! reply was nullptr";
+        m_requestState = RequestIdle;
+    }
+    if (m_requestState==RequestIdle) {
+        updateCalendarYearly();
+    }
+}
+
+
+void MainWidget::updateCalendarYearly()
+{
+    // cleanup old days
+    for (auto &d : m_days) {
+        if (m_scene) {
+            m_scene->removeItem(d);
+        }
+        delete d;
+    }
+    m_days.clear();
+
+    // create new days
+    QRectF rc1, rc2;
     // draw all of the days
-    QDate date(year, 1, 1);
+    QDate date(m_year, 1, 1);
     rc1.setRect(21, 37, 61, 32);
     rc2 = rc1;
     int month = date.month();
-    while (date.year()==year) {
+    while (date.year()==m_year) {
         if (month != date.month()) {
             month = date.month();
             rc1.moveLeft(rc1.right()+2);
             rc2 = rc1;
         }
-        CalendarDay *d = new CalendarDay(date, rc2);
+        bool isVacation = false;
+        if (m_vacations!=nullptr) {
+            isVacation = !m_vacations->checkVacation(date).isEmpty();
+        }
+        QString holidayName;
+        if (m_holidays!=nullptr) {
+            holidayName = m_holidays->isHoliday(date);
+        }
+        CalendarDay *d = new CalendarDay(date, rc2, holidayName, isVacation);
         m_scene->addItem(d);
+        m_days.append(d);
         rc2.moveTop(rc2.bottom()+2);
         date = date.addDays(1);
     }
 }
 
+void MainWidget::updateCalendarDaily()
+{
+    for (auto &d : m_days) {
+        d->updateDay();
+    }
+}
+
 QPointF MainWidget::centered(const QRectF &a, const QRectF &b)
 {
-    qDebug() << "+++ MainWidget::centered(a =" << a << "b =" << b << ")";
+    //qDebug() << "+++ MainWidget::centered(a =" << a << "b =" << b << ")";
     QPointF pt = QPointF(b.left() + (b.width()-a.width())/2., b.top() + (b.height()-a.height())/2.);
-    qDebug() << "--- MainWidget::centered() =" << pt;
+    //qDebug() << "--- MainWidget::centered() =" << pt;
     return pt;
 }
 
