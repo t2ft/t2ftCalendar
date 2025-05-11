@@ -25,39 +25,45 @@ PublicHolidays::PublicHolidays(const QJsonObject &dates)
         QString dateString = i.value().toObject()["datum"].toString();
         date = QDate::fromString(dateString, Qt::ISODate);
         QString hint = i.value().toObject()["hinweis"].toString();
-        m_holidays.append(Holiday(date, name, hint, true));
-        if (name == "Ostermontag") {
-            m_holidays.append(Holiday(date.addDays(-1), "Ostersonntag", "", false));
-            m_holidays.append(Holiday(date.addDays(-49), "Rosenmontag", "", false));
-        }
-        if (name == "Pfingstmontag") {
-            m_holidays.append(Holiday(date.addDays(-1), "Pfingstsonntag", "", false));
-        }
-        if (name == "1. Weihnachtstag") {
-            date = date.addDays(-1);
-            m_holidays.append(Holiday(date, "Heilig Abend", "", false));
-            while (date.dayOfWeek()!=7) {
-                date = date.addDays(-1);
-            }
-            date = date.addDays(-21);
-            m_holidays.append(Holiday(date, "1. Advent", "", false));
+        if (name == "Neujahrstag") {
+            m_holidays.append(Holiday(date, "Neujahr", hint, true));
+        } else if (name == "Ostermontag") {
+            m_holidays.append(Holiday(date, "Oster- montag", hint, true));
+            m_holidays.append(Holiday(date.addDays(-1), "Oster- sonntag", "", false));
+            m_holidays.append(Holiday(date.addDays(-49), "Rosen- montag", "", false));
+        } else if (name == "Pfingstmontag") {
+            m_holidays.append(Holiday(date, "Pfingst- montag", "", true));
+            m_holidays.append(Holiday(date.addDays(-1), "Pfingst- sonntag", "", false));
+        } else if (name == "1. Weihnachtstag") {
+            m_holidays.append(Holiday(date, "1. Weih- nachtstag", hint, true));
+            m_holidays.append(Holiday(date.addDays(-1), "Heilig Abend", "", false));
+            m_holidays.append(Holiday(date.addDays(-date.dayOfWeek()-21), "1. Advent", "", false));
+        } else if (name == "2. Weihnachtstag") {
+            m_holidays.append(Holiday(date, "2. Weih- nachtstag", hint, true));
+        } else if (name == "Christi Himmelfahrt") {
+            m_holidays.append(Holiday(date, "Christi Himmel- fahrt", hint, true));
+        } else if (name == "Fronleichnam") {
+            m_holidays.append(Holiday(date, "Fron- leichnam", hint, true));
+        } else if (name == "Augsburger Friedensfest") {
+            m_holidays.append(Holiday(date, "Augs- burger Friedensfest", hint, false));
+        } else if (name == "Mariä Himmelfahrt") {
+            m_holidays.append(Holiday(date, "Mariä Himmel- fahrt", hint, true));
+        } else if (name == "Allerheiligen") {
+            m_holidays.append(Holiday(date, "Aller- heiligen", hint, true));
+        } else {
+            m_holidays.append(Holiday(date, name, hint, true));
         }
         ++i;
     }
     // add some more dates wich are not public holidays, but interesting
     date = QDate(year, 3, 31);
-    while (date.dayOfWeek()!=7) {
-        date = date.addDays(-1);
-    }
-    m_holidays.append(Holiday(date, "Beginn der Sommerzeit", "", false));
-
+    m_holidays.append(Holiday(date.addDays(date.dayOfWeek()==7 ? 0 : -date.dayOfWeek()), "Beginn der Sommer- zeit", "", false));
     date = QDate(year, 10, 31);
-    while (date.dayOfWeek()!=7) {
-        date = date.addDays(-1);
-    }
-    m_holidays.append(Holiday(date, "Ende der Sommerzeit", "", false));
-
-    m_holidays.append(Holiday(QDate(year,10,31), "Reformationstag", "", false));
+    m_holidays.append(Holiday(date.addDays(date.dayOfWeek()==7 ? 0 : -date.dayOfWeek()), "Ende der Sommer- zeit", "", false));
+    date = QDate(year,5,1);
+    m_holidays.append(Holiday(date.addDays(7+(7-date.dayOfWeek())), "Muttertag", "", false));
+    m_holidays.append(Holiday(QDate(year,10,31), "Reforma- tionstag", "", false));
+    m_holidays.append(Holiday(QDate(year,12,06), "Nikolaus", "", false));
     m_holidays.append(Holiday(QDate(year,12,31), "Silvester", "", false));
 
     m_valid = allValid;
