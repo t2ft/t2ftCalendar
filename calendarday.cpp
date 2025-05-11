@@ -23,6 +23,15 @@ CalendarDay::CalendarDay(const QDate &date, const QRectF &rect, const QString &h
 {
     m_stringDay = QLocale::system().toString(m_date, "ddd").left(2);
     m_stringDate = QLocale::system().toString(m_date, "dd.MMM");
+    if ((date.dayOfWeek()==1) || ((date.month()==1) && (date.day()==1))) {
+        int w = date.weekNumber();
+        if ((w==1) && (date.month()!=1)) {
+            w += 52;
+        }
+        m_stringWeek = QString::number(w);
+        m_linesWeek.append(QLineF(m_rect.topLeft(),  m_rect.topRight()));
+        m_linesWeek.append(QLineF(m_rect.topRight(), m_rect.bottomRight()));
+    }
 
     const bool isSunday = m_date.dayOfWeek()==7;
     const bool isSaturday = m_date.dayOfWeek()==6;
@@ -39,6 +48,14 @@ CalendarDay::CalendarDay(const QDate &date, const QRectF &rect, const QString &h
     m_fontHoliday.setFamily("Calibri");
     m_fontHoliday.setPointSizeF(7);
     m_fontHoliday.setWeight(QFont::Normal);
+
+    m_fontWeek.setFamily("Source Sans Pro");
+    m_fontWeek.setPointSizeF(14);
+    m_fontWeek.setWeight(QFont::DemiBold);
+
+    m_penWeek.setStyle(Qt::SolidLine);
+    m_penWeek.setWidthF(3.0);
+    m_penWeek.setColor(Qt::blue);
 
     m_toHoliday = QTextOption(Qt::AlignLeft | Qt::AlignVCenter);
     m_toHoliday.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
@@ -94,6 +111,13 @@ void CalendarDay::paint(QPainter* painter, const QStyleOptionGraphicsItem* optio
         painter->setPen(m_penText);
         painter->setFont(m_fontHoliday);
         painter->drawText(m_rcHoliday, m_holidayName, m_toHoliday);
+    }
+
+    if (!m_stringWeek.isEmpty()) {
+        painter->setPen(m_penWeek);
+        painter->drawLines(m_linesWeek);
+        painter->setFont(m_fontWeek);
+        painter->drawText(m_rect.adjusted(0,0,-2,0), Qt::AlignRight | Qt::AlignVCenter, m_stringWeek);
     }
 }
 

@@ -19,6 +19,7 @@
 #include <QBrush>
 #include <QPen>
 #include <QTextOption>
+#include <QLineF>
 
 class CalendarDay : public QGraphicsItem
 {
@@ -31,19 +32,23 @@ public:
     void updateDay();
 
 private:
-    QDate       m_date;
-    QRectF      m_rect;
-    QRectF      m_rcHoliday;
-    QString     m_holidayName;
-    QFont       m_fontDay;
-    QFont       m_fontDate;
-    QFont       m_fontHoliday;
-    QBrush      m_brushBackground;
-    QPen        m_penText;
-    QPen        m_penBorder;
-    QString     m_stringDay;
-    QString     m_stringDate;
-    QTextOption m_toHoliday;
+    QDate           m_date;
+    QRectF          m_rect;
+    QRectF          m_rcHoliday;
+    QString         m_holidayName;
+    QFont           m_fontDay;
+    QFont           m_fontDate;
+    QFont           m_fontHoliday;
+    QFont           m_fontWeek;
+    QBrush          m_brushBackground;
+    QPen            m_penText;
+    QPen            m_penBorder;
+    QPen            m_penWeek;
+    QString         m_stringDay;
+    QString         m_stringDate;
+    QString         m_stringWeek;
+    QTextOption     m_toHoliday;
+    QList<QLineF>   m_linesWeek;
 };
 
 #endif // CALENDARDAY_H
