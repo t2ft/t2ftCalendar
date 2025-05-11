@@ -148,5 +148,5 @@ Warning: Line 670, Column 3: [Hint] Variable 'RES' never used
 Warning: Line 822, Column 3: [Hint] Variable 'X' never used
 Warning: Line 804, Column 3: [Hint] Variable 'XTCDIRPAGE' never used
 
-Successful compile (11,625 sec). Resulting Setup program filename is:
+Successful compile (12,843 sec). Resulting Setup program filename is:
 D:\tt\Documents\t2ft\000_Projekte\Eigene\Programme\t2ftCalendar\setup\t2ftCalendar-1.0.0.0.exe

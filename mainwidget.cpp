@@ -117,7 +117,6 @@ void MainWidget::updateGeometry()
 void MainWidget::createCalendar()
 {
     qDebug() << "+++ MainWidget::createCalendar()";
-    const QString monthName[12] = { "Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez" };
     const int H = 1090;
     const int W = 798;
     QPen pen;
@@ -142,7 +141,7 @@ void MainWidget::createCalendar()
     font.setPointSizeF(14.66395569);
     rc1.setRect(20, 0, 65, 36);
     for (int i=0; i<12; ++i) {
-        t = new QGraphicsSimpleTextItem(monthName[i]);
+        t = new QGraphicsSimpleTextItem(QLocale::system().toString(QDate(m_currentDate.year(), i+1, 1), "MMM"));
         t->setFont(font);
         t->setBrush(brush);
         t->setPos(centered(t->boundingRect(), rc1));
