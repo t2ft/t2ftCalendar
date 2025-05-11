@@ -23,7 +23,7 @@
 class CalendarDay : public QGraphicsItem
 {
 public:
-    CalendarDay(const QDate &date, const QRectF &rect, const QString &holidayName, bool isVacation, QGraphicsItem *parent = nullptr);
+    CalendarDay(const QDate &date, const QRectF &rect, const QString &holidayName, bool isPublicHoliday, bool isVacation, QGraphicsItem *parent = nullptr);
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;

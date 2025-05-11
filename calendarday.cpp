@@ -14,7 +14,7 @@
 #include <QPainter>
 
 
-CalendarDay::CalendarDay(const QDate &date, const QRectF &rect, const QString &holidayName, bool isVacation, QGraphicsItem *parent)
+CalendarDay::CalendarDay(const QDate &date, const QRectF &rect, const QString &holidayName, bool isPublicHoliday, bool isVacation, QGraphicsItem *parent)
     : QGraphicsItem(parent),
     m_date(date),
     m_rect(rect),
@@ -44,11 +44,11 @@ CalendarDay::CalendarDay(const QDate &date, const QRectF &rect, const QString &h
     m_toHoliday.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
 
     m_brushBackground.setStyle(Qt::SolidPattern);
-    if (isVacation && !isSunday && holidayName.isEmpty()) {
+    if (isVacation && !isSunday && !isPublicHoliday) {
         // vacation, but not a sunday and not a holiday
         m_brushBackground.setColor(QColor("#FFFF00"));
     } else {
-        if (m_holidayName.isEmpty()) {
+        if (!isPublicHoliday) {
             // regular day
             if (isSunday) {
                 m_brushBackground.setColor(QColor("#FFCC99"));
@@ -63,7 +63,7 @@ CalendarDay::CalendarDay(const QDate &date, const QRectF &rect, const QString &h
         }
     }
     m_penText.setStyle(Qt::SolidLine);
-    m_penText.setColor(m_holidayName.isEmpty() ? Qt::black : Qt::red);
+    m_penText.setColor(isPublicHoliday ? Qt::red : Qt::black);
     updateDay();
 }
 

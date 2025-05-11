@@ -22,9 +22,9 @@ class Holiday
 {
 public:
     Holiday();
-    Holiday(const QString &date, const QString &name, const QString &hint);
+    Holiday(const QDate &date, const QString &name, const QString &hint, bool isPublic);
 
-    QString isHoliday(const QDate &date) const;
+    bool isHoliday(const QDate &dat, QString &name, bool &isPublic) const;
     bool isValid() const;
     QString toString() const;
 
@@ -32,6 +32,7 @@ private:
     QDate       m_date;
     QString     m_name;
     QString     m_hint;
+    bool        m_isPublic;
 };
 
 
@@ -40,7 +41,7 @@ class PublicHolidays
 public:
     PublicHolidays(const QJsonObject &dates);
 
-    QString isHoliday(const QDate &date) const;
+    bool isHoliday(const QDate &date, QString &name, bool &isPublic) const;
     bool allValid() const;
     int size() const;
     Holiday operator[](int index) const;

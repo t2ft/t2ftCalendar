@@ -266,10 +266,12 @@ void MainWidget::updateCalendarYearly()
             isVacation = !m_vacations->checkVacation(date).isEmpty();
         }
         QString holidayName;
+        bool isHoliday = false;
+        bool isPublic = false;
         if (m_holidays!=nullptr) {
-            holidayName = m_holidays->isHoliday(date);
+            isHoliday = m_holidays->isHoliday(date, holidayName, isPublic);
         }
-        CalendarDay *d = new CalendarDay(date, rc2, holidayName, isVacation);
+        CalendarDay *d = new CalendarDay(date, rc2, holidayName, isPublic, isVacation);
         m_scene->addItem(d);
         m_days.append(d);
         rc2.moveTop(rc2.bottom()+2);
