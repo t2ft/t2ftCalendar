@@ -16,6 +16,7 @@
 #include "calendarday.h"
 #include "schoolvacations.h"
 #include "publicholydays.h"
+#include "tpowereventfilter.h"
 
 #include <QMouseEvent>
 #include <QDebug>
@@ -30,6 +31,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QAbstractEventDispatcher>
 
 #define CFG_GRP_WINDOW  "TWindow"
 #define CFG_GEOMETRY    "geometry"
@@ -54,6 +56,11 @@ MainWidget::MainWidget(QWidget *parent)
     , m_currentDate(QDate::currentDate())
     , m_workDate(m_currentDate)
 {
+    // allow us to dispatch windows power events
+    TPowerEventFilter *pFilter = new TPowerEventFilter(this);
+    QAbstractEventDispatcher::instance()->installNativeEventFilter(pFilter);
+    connect(pFilter, &TPowerEventFilter::ResumeSuspend, this, &MainWidget::updateCalendar);
+
     ui->setupUi(this);
     m_scene = ui->graphicsView->scene();
     if (m_scene == nullptr) {

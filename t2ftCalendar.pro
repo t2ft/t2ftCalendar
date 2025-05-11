@@ -30,6 +30,7 @@ SOURCES += \
     schoolvacations.cpp \
     tapp.cpp \
     tmessagehandler.cpp \
+    tpowereventfilter.cpp \
     zoomview.cpp
 
 HEADERS += \
@@ -41,6 +42,7 @@ HEADERS += \
     tapp.h \
     tmessagehandler.h \
     tmsghandler_main.h \
+    tpowereventfilter.h \
     zoomview.h
 
 FORMS += \
