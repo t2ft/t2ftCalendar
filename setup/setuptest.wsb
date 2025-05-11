@@ -2,7 +2,7 @@
 	<Networking>Disable</Networking>
 	<MappedFolders>
 		<MappedFolder>
-			<HostFolder>D:\tt\Documents\t2ft\000_Projekte\P2021\P2021_001-Pressfinish_KS-EHinge\src\frimotion\fmTestTool\setup</HostFolder>
+			<HostFolder>D:\tt\Documents\t2ft\000_Projekte\Eigene\Programme\t2ftCalendar\setup</HostFolder>
 			<ReadOnly>true</ReadOnly>
 		</MappedFolder>
 	</MappedFolders>

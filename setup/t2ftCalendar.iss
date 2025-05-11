@@ -1,17 +1,17 @@
 ; ------------------------------------------------------------------------------
-; Installation of frimotionTool
-; Copyright (C) 2022-2024 by Pressfinish GmbH, Germering, Germany
+; Installation of t2ftCalendar
+; Copyright (C) 2021-2025 by t2ft - Thomas Thanner, Bobingen, Germany
 ; ------------------------------------------------------------------------------
 ; 2021-08-25  TTHA  initial version
 ;                   use windeployqt.exe to collect all dependencies. 
 ;                   to make this work, these two custom build steps have to be
 ;                   added to the release build configuration in qtCreator:
-;                1) Command:            cmd.exe
-;                   Arguments:          /C "copy %{CurrentRun:Executable:NativeFilePath} %{sourceDir}\..\setup\deploy\%{CurrentRun:Executable:FileName}"
-;                   Working Directory:  %{buildDir}
+;                1) Copy File:
+;                   Source:       %{ActiveProject:RunConfig:Executable:FilePath}
+;                   Destination:  %{sourceDir}\setup\deploy\%{ActiveProject:RunConfig:Executable:FileName}
 ;                2) Command:            windeployqt.exe
-;                   Arguments:          %{CurrentRun:Executable:FileName}
-;                   Working Directory:  %{sourceDir}\..\setup\deploy
+;                   Arguments:          --dir %{sourceDir}\setup\deploy\ %{ActiveProject:RunConfig:Executable:FilePath}
+;                   Working Directory:  %{sourceDir}\setup\deploy
 ; ------------------------------------------------------------------------------
 
 ; define this to enable debug ouputs and skip signing (for speed up) 
@@ -24,14 +24,14 @@
 
 ; definitions specific for the installation of this application
 #define deployDir "deploy\"
-#define myAppBaseName "fmTestTool"
-#define myAppTitle "Frimotion Production Test Tool"
+#define myAppBaseName "t2ftCalendar"
+#define myAppTitle "Automatic Year Long Desktop Calendar"
 #define myAppExeName myAppBaseName + ".exe"
 #define myAppVersion GetVersionNumbersString(AddBackslash(deployDir) + myAppExeName)
-#define myWizardSmallImageFile  "res\Pressfinish_Logo.bmp"
+#define myWizardSmallImageFile  "res\t2ft_logo.bmp"
 #define myWizardImageFile       "res\" + myAppBaseName + "_base.png"
-#define docDir "..\..\..\..\doc\Prüfanweisung"
-#define manualFile "PA_FMC-V1_de-r03.pdf"
+#define docDir ""
+#define manualFile ""
 
 ; define this to the number applications that have to be closed before uninstall
 ; or do not define anything if there are none
@@ -45,11 +45,11 @@
 ; common functions and settings for all installation of the suite
 ;----------------------------------------------------------------------
 ; name of the program group
-#define mySuiteName "fmTestTool"
+#define mySuiteName "t2ftCalendar"
 ; Company name
-#define mySuitePublisher "PressFinish Electronics GmbH"
+#define mySuitePublisher "t2ft - Thomas Thanner"
 ; Company URL
-#define mySuiteURL "http://www.pressfinish.de"
+#define mySuiteURL "https://t2ft.de"
 ; default installation path
 #define mySuitePath '{pf}\' + mySuitePublisher + '\' + mySuiteName
 ; name of the configuration group
@@ -66,7 +66,7 @@
 #define InstallerSettings RegSuiteKey + '\installer'
 
 ; MinGW Libraries
-#define minGW_Libs32 "C:\Qt\Tools\mingw810_32\lib"
+#define minGW_Libs "C:\Qt\6.8.3\llvm-mingw_64\bin"
 
 ; ------------------------------------------------------------------------------
 ; files that will be copied on customers PC and that need to be signed
@@ -164,17 +164,16 @@ AlwaysShowDirOnReadyPage=yes
 Source: {#deployDir}\*.*; DestDir: "{app}"; Flags: ignoreversion createallsubdirs recursesubdirs
 #ifndef NO_RUNTIME
 Source: {#deployDir}\vcredist*.*; DestDir: "{tmp}"; Flags: overwritereadonly ignoreversion; Permissions: everyone-full
-;#else
-;Source: "{#minGW_Libs32}\libgcc_s_dw2-1.dll"; DestDir: "{app}"; Flags: ignoreversion
-;Source: "{#minGW_Libs32}\libstdc++-6.dll"; DestDir: "{app}"; Flags: ignoreversion
-;Source: "{#minGW_Libs32}\libwinpthread-1.dll"; DestDir: "{app}"; Flags: ignoreversion
+#else
+Source: "{#minGW_Libs}\libc++.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#minGW_Libs}\libunwind.dll"; DestDir: "{app}"; Flags: ignoreversion
 #endif
 Source: "qt.conf"; DestDir: "{app}"; Flags: sharedfile overwritereadonly restartreplace uninsnosharedfileprompt
 
 ; other files
 Source: "LICENSE"; DestDir: "{app}"; Flags: ignoreversion sharedfile uninsnosharedfileprompt
-Source: "..\changelog.txt"; DestDir: "{app}"; Flags: ignoreversion sharedfile uninsnosharedfileprompt
-Source: {#docDir}\{#manualFile}; DestDir: "{app}"; Flags: ignoreversion sharedfile uninsnosharedfileprompt
+;Source: "..\changelog.txt"; DestDir: "{app}"; Flags: ignoreversion sharedfile uninsnosharedfileprompt
+;Source: {#docDir}\{#manualFile}; DestDir: "{app}"; Flags: ignoreversion sharedfile uninsnosharedfileprompt
 
 [Dirs]
 
@@ -209,7 +208,7 @@ Filename: "{app}\{#myAppExeName}"; Parameters: "lang={language}"; StatusMsg: {cm
 const //------------------------------------------------------------------------
 // central definition of application GUUIDs
 // allows detection of other installations
-  UUID_App  = '{f0ed8b0c-c42a-4d03-8926-ecdc292eccd4}';
+  UUID_App  = '{e7a7f3e9-4a0c-4973-8d8f-cc20006377aa}';
   nUUID_App         = 1;
 
 type  //------------------------------------------------------------------------

@@ -1,14 +1,14 @@
 # ***************************************************************
-# Pressfinish frimotion Production Test Tool
+# t2ft automatic calendar of the year
 # ***************************************************************
 #
-# Copyright (C) 2024 by Pressfinish GmbH, Maisach, Germany
+# Copyright (C) 2025 by t2ft - Thomas Thanner, Bobingen, Germany
 # ***************************************************************
 
 All rights reserved.
 
 Redistribution and use in binary form, without modification, of the 
-frimotionTool is permitted provided that the following 
+t2ftCalendar is permitted provided that the following 
 conditions are met:
 
 1. The application must be used with Pressfinish hardware
@@ -53,7 +53,7 @@ acknowledgements &  3rd party licenses
 -------------------------------------------------------------------
 -------------------------------------------------------------------
 
-the friMotionTool application makes extensive use of the Qt5 framework
+the friMotionTool application makes extensive use of the Qt6 framework
 by The Qt Company Ltd
 
 Copyright (C) 2017 The Qt Company Ltd and/or its subsidiary(-ies).

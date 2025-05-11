@@ -7,9 +7,9 @@
    id="svg2"
    version="1.1"
    inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
-   sodipodi:docname="frimotionTool_base.svg"
+   sodipodi:docname="t2ftCalendar_base.svg"
    style="display:inline"
-   inkscape:export-filename="fmTestTool_base.png"
+   inkscape:export-filename="t2ftCalendar_base.png"
    inkscape:export-xdpi="9.6000004"
    inkscape:export-ydpi="9.6000004"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -212,17 +212,17 @@
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.20634369"
-     inkscape:cx="455.55065"
-     inkscape:cy="2205.059"
+     inkscape:zoom="0.29181404"
+     inkscape:cx="678.51429"
+     inkscape:cy="1807.658"
      inkscape:document-units="mm"
      inkscape:current-layer="layer4"
      showgrid="false"
      units="mm"
-     inkscape:window-width="1878"
-     inkscape:window-height="1333"
-     inkscape:window-x="4488"
-     inkscape:window-y="2"
+     inkscape:window-width="3390"
+     inkscape:window-height="2076"
+     inkscape:window-x="3315"
+     inkscape:window-y="6"
      inkscape:window-maximized="0"
      fit-margin-top="5"
      fit-margin-left="5"
@@ -262,104 +262,9 @@
      inkscape:label="Logo"
      style="display:inline;opacity:0.92"
      transform="translate(0,2705.5669)">
-    <g
-       id="g1179"
-       transform="translate(67.003807,-2634.2329)">
-      <path
-         class="cls-1"
-         d="m 156,16 h 309 v 9 H 156 Z"
-         id="path1118" />
-      <path
-         class="cls-1"
-         d="m 156,84 h 309 v 9 H 156 Z"
-         id="path1120" />
-      <path
-         class="cls-1"
-         d="m 156,79 h 18 V 64 h 18.65 c 12.35,0 16.8,-7.12 16.8,-16.3 0,-10.67 -4.57,-16.7 -16.92,-16.7 H 156 Z m 18,-37 h 11.17 c 4.36,0 6,1.46 6,5.06 0,3.6 -1.66,4.94 -6,4.94 H 174 Z"
-         id="path1122" />
-      <polygon
-         class="cls-2"
-         points="306,61.02 335,61.02 335,49.02 306,49.02 306,43.02 337,43.02 337,31.02 288,31.02 288,79.02 337,79.02 337,67.02 306,67.02 "
-         id="polygon1124" />
-      <path
-         class="cls-2"
-         d="m 377.26,61.4 c 2.23,0.39 3,1.76 3,3.14 0,2.23 -1.4,3.8 -6.55,3.8 a 12.29,12.29 0 0 1 -5.62,-1 3.69,3.69 0 0 1 -1.77,-3.34 h -19.9 c 0.06,13.76 13.93,15.72 26.63,15.72 18.55,0 26.86,-5.37 26.86,-16.77 0,-7.93 -5.15,-12.25 -13.46,-13.63 l -19.72,-3.28 a 2.19,2.19 0 0 1 -2.17,-2.42 c 0,-2 1.7,-3.34 6.62,-3.34 a 12,12 0 0 1 5.15,1 3.83,3.83 0 0 1 2.52,3.72 H 398 C 397.42,35.1 389.75,29.66 371.14,29.66 357.6,29.68 347,33 347,45.08 c 0,6.55 3.33,11.79 11.41,13.17 l 18.84,3.15 z"
-         id="path1126" />
-      <path
-         class="cls-2"
-         d="m 438.69,61.4 c 2.22,0.39 3,1.76 3,3.14 0,2.23 -1.41,3.8 -6.56,3.8 a 12.32,12.32 0 0 1 -5.62,-1 3.7,3.7 0 0 1 -1.76,-3.34 h -19.9 c 0.06,13.76 13.93,15.72 26.63,15.72 18.55,0 26.86,-5.37 26.86,-16.77 0,-7.93 -5.15,-12.25 -13.46,-13.63 L 428.16,46.04 A 2.19,2.19 0 0 1 426,43.64 c 0,-2 1.7,-3.34 6.62,-3.34 a 12,12 0 0 1 5.15,1 3.83,3.83 0 0 1 2.5,3.7 h 19.2 c -0.59,-9.9 -8.25,-15.34 -26.86,-15.34 -13.58,0 -24.17,3.28 -24.17,15.4 0,6.55 3.33,11.79 11.41,13.17 l 18.84,3.15 z"
-         id="path1128" />
-      <path
-         class="cls-1"
-         d="m 238,43 h 13.19 c 3.16,0 5.52,0.87 5.52,4.5 0,3 -1.55,4.5 -5.25,4.5 H 238 Z m -19,36 h 18 V 61 h 6.4 c 3.47,0 12.17,16.55 12.84,18 H 279 c 0,0 -10.48,-17 -12.69,-18.08 a 51.13,51.13 0 0 0 -5.1,-1.93 c 5.35,-1.61 13.94,-6.29 13.94,-12.59 0,-5.24 -2.92,-11.9 -6.38,-13.65 -2.55,-1.27 -5.75,-1.74 -11,-1.74 H 219 Z"
-         id="path1130" />
-      <path
-         class="cls-3"
-         d="m 681.62,24 c -5.37,-5.05 -9.34,-9.82 -23.81,-9.82 -14.83,0 -25.36,9.65 -25.36,22 0,11.57 8.54,16.44 19,22.23 6.81,3.74 15.3,6.59 15.3,12.17 0,5.73 -3.58,9.63 -10.59,9.63 -7.35,0 -12.26,-3.66 -14.59,-9.4 l -10.73,11.44 c 6.07,8.61 12.85,12.37 25,12.37 18,0 28,-8.53 28,-25.48 0,-20.9 -34,-22.18 -34,-33.15 0,-5.32 5.11,-8 10.6,-8 a 10.29,10.29 0 0 1 10.3,7.14 l 11,-11.09 z"
-         id="path1132" />
-      <polygon
-         class="cls-3"
-         points="524,16.02 524,93.02 542,93.02 541.99,16.02 "
-         id="polygon1134" />
-      <path
-         class="cls-3"
-         d="m 549,16 v 77 h 17 V 40 h 0.57 c 0.53,2.5 20.21,53 20.21,53 H 604 V 16 h -17 v 52 h -0.57 C 586.27,66.67 569.69,22.24 567.14,16 Z"
-         id="path1136" />
-      <polygon
-         class="cls-3"
-         points="724,16.02 724,46.02 709,46.02 709,16.02 691,16.02 691,93.02 709,93.02 709,62.02 724,62.02 724,93.02 741,93.02 741,16.02 "
-         id="polygon1138" />
-      <polygon
-         class="cls-3"
-         points="519,45.02 492,45.02 492,31.02 521,31.02 521,16.02 474,16.02 474,93.02 492,93.02 492,60.02 519,60.02 "
-         id="polygon1140" />
-      <polygon
-         class="cls-3"
-         points="610,16.02 610,93.02 627,93.02 627,16.02 "
-         id="polygon1142" />
-      <circle
-         class="cls-3"
-         cx="111.82"
-         cy="71.290001"
-         r="14.01"
-         id="circle1144" />
-      <circle
-         class="cls-3"
-         cx="28.559999"
-         cy="34.119999"
-         r="14.01"
-         id="circle1146" />
-      <circle
-         class="cls-3"
-         cx="28.559999"
-         cy="108.15"
-         r="14.01"
-         id="circle1148" />
-      <rect
-         class="cls-3"
-         x="37"
-         y="28.02"
-         width="89"
-         height="11"
-         id="rect1150" />
-      <rect
-         class="cls-3"
-         x="14"
-         y="66.019997"
-         width="89"
-         height="11"
-         id="rect1152" />
-      <rect
-         class="cls-3"
-         x="35"
-         y="103.2"
-         width="705.98999"
-         height="10.64"
-         id="rect1154" />
-    </g>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:366.384px;line-height:1.25;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#009a7c;fill-opacity:0.933333;stroke:none;stroke-width:0.871857"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:366.384px;line-height:1.25;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#1c008e;fill-opacity:0.945098;stroke:none;stroke-width:0.871857"
        x="292.89758"
        y="1097.2888"
        id="text2223"
@@ -368,9 +273,9 @@
          id="tspan2221"
          x="292.89758"
          y="1097.2888"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:366.384px;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#009a7c;fill-opacity:0.933333;stroke-width:0.871857">fm<tspan
-   style="fill:#000000"
-   id="tspan1">Test</tspan>Tool</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:366.384px;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#1c008e;fill-opacity:0.945098;stroke-width:0.871857">t2f<tspan
+   style="fill:#000000;fill-opacity:0.945098"
+   id="tspan1">Calendar</tspan></tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:420.232px;line-height:1.25;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#808080;fill-opacity:0.929412;stroke:none;stroke-width:0.999995"
@@ -383,6 +288,46 @@
          x="625.66028"
          y="667.64374"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:420.232px;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#808080;fill-opacity:0.929412;stroke-width:0.999995">Setup</tspan></text>
+    <g
+       id="g2"
+       transform="matrix(3.1048955,0,0,3.1048955,-966.46282,938.39302)">
+      <path
+         id="rect830"
+         style="fill:#ffffff;stroke:#1c0091;stroke-width:8.61732;stroke-linecap:square"
+         d="M 350.30867,-1147.2583 H 485.3134 v 135.0047 H 350.30867 Z" />
+      <g
+         aria-label="t"
+         id="text820"
+         style="font-size:40.9593px;line-height:32.6394px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro, Normal';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.264583px"
+         transform="matrix(3.7795276,0,0,3.7795276,197.15393,-1690.0201)">
+        <path
+           d="m 55.699224,174.794 q -1.597414,0 -2.703315,-0.49151 -1.064942,-0.49151 -1.761251,-1.35166 -0.655349,-0.86014 -0.942064,-2.08892 -0.286715,-1.22878 -0.286715,-2.70332 v -11.01805 h -2.949071 v -2.53948 l 3.112908,-0.2048 0.409593,-5.57046 h 2.826193 v 5.57046 h 5.36567 v 2.74428 h -5.36567 v 11.05901 q 0,1.84317 0.655349,2.86715 0.696308,0.98303 2.4166,0.98303 0.532471,0 1.146861,-0.16384 0.614389,-0.16384 1.105901,-0.36863 l 0.655349,2.53947 q -0.819186,0.28672 -1.80221,0.49152 -0.942064,0.24575 -1.884128,0.24575 z"
+           id="path305" />
+      </g>
+      <g
+         aria-label="2"
+         id="text824"
+         style="font-weight:bold;font-size:20.1218px;line-height:16.0346px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro, Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.339572px"
+         transform="matrix(3.7795276,0,0,3.7795276,197.15393,-1690.0201)">
+        <path
+           d="m 59.543012,159.71214 q 1.227431,-1.14694 2.233522,-2.13291 1.026213,-1.00609 1.750599,-1.87133 0.744507,-0.88536 1.146944,-1.62987 0.422558,-0.76463 0.422558,-1.44877 0,-0.94573 -0.482924,-1.42865 -0.482924,-0.50304 -1.32804,-0.50304 -0.704264,0 -1.247553,0.40243 -0.543289,0.38232 -1.026213,0.90548 l -1.609745,-1.58962 q 0.945725,-1.00609 1.931694,-1.50914 0.98597,-0.52316 2.354253,-0.52316 0.945726,0 1.710355,0.30182 0.784751,0.28171 1.348162,0.825 0.563411,0.52317 0.865238,1.26767 0.301828,0.74451 0.301828,1.67011 0,0.80488 -0.342071,1.64999 -0.342071,0.825 -0.925604,1.67011 -0.563411,0.825 -1.307918,1.67012 -0.724386,0.82499 -1.509137,1.62986 0.482924,-0.0604 1.066457,-0.10061 0.603654,-0.0604 1.066456,-0.0604 h 2.575593 v 2.4951 h -8.994454 z"
+           id="path302" />
+      </g>
+      <g
+         aria-label="ft"
+         id="text828"
+         style="font-size:14.5595px;line-height:11.6021px;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro, Normal';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#1c0091;stroke-width:0.264583px"
+         transform="matrix(3.7795276,0,0,3.7795276,197.15393,-1690.0201)">
+        <path
+           d="m 70.721446,174.21513 q -0.29119,0.10192 -0.669737,0.17472 -0.363988,0.0874 -0.800774,0.0874 -0.6115,0 -1.048285,-0.18927 -0.422226,-0.18927 -0.698857,-0.52414 -0.262071,-0.34943 -0.393107,-0.81533 -0.116476,-0.48047 -0.116476,-1.06285 v -3.40693 h -2.373202 v 5.82381 h -1.674344 v -5.82381 h -0.960928 v -1.25212 l 0.960928,-0.0728 v -0.74254 q 0,-0.55326 0.131035,-1.01916 0.131036,-0.48047 0.422227,-0.81534 0.29119,-0.34943 0.727975,-0.5387 0.451345,-0.18927 1.091964,-0.18927 0.378548,0 0.713417,0.0728 0.349428,0.0728 0.59694,0.17472 l -0.32031,1.25212 q -0.393107,-0.17472 -0.786214,-0.17472 -0.90269,0 -0.90269,1.20844 v 0.77166 h 2.460559 l 0.203833,-1.95098 h 1.383154 v 1.95098 h 1.8345 v 1.32491 h -1.8345 v 3.40693 q 0,1.25212 1.019167,1.25212 0.189273,0 0.378547,-0.0437 0.203833,-0.0437 0.363988,-0.11648 z"
+           style="font-weight:600;-inkscape-font-specification:'Source Sans Pro Semi-Bold'"
+           id="path299" />
+      </g>
+      <path
+         id="rect834"
+         style="fill:none;stroke:#000000;stroke-width:4.30866;stroke-linecap:square"
+         d="m 361.07133,-1136.4958 h 113.47941 v 113.4794 H 361.07133 Z" />
+    </g>
   </g>
   <g
      inkscape:groupmode="layer"
