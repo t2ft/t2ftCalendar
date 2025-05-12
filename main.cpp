@@ -13,11 +13,15 @@
 #include "mainwidget.h"
 
 #include <tapp.h>
+#include <QDebug>
 
 int main(int argc, char *argv[])
 {
     TApp a(argc, argv);
+    qDebug() << "=== Starting" << qApp->applicationDisplayName() << "=============================================================";
     MainWidget w;
     w.show();
-    return a.exec();
+    int ret = a.exec();
+    qDebug() << "--- DONE --------------------------------------------------------------------------------------------------------";
+    return ret;
 }

@@ -98,6 +98,7 @@ void MainWidget::closeEvent(QCloseEvent *event)
     cfg.beginGroup(CFG_GRP_WINDOW);
     cfg.setValue(CFG_GEOMETRY, geometry());
     QWidget::closeEvent(event);
+    qApp->quit();
     qDebug() << "--- MainWidget::closeEvent(QCloseEvent *event)";
 }
 
