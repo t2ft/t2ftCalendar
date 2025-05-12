@@ -9,7 +9,7 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 # application version
-VERSION = 1.0.0.0
+VERSION = 1.0.0.1
 QMAKE_TARGET_COMPANY = t2ft
 QMAKE_TARGET_PRODUCT = t2ftCalendar
 QMAKE_TARGET_DESCRIPTION = Year Long Desktop Calendar

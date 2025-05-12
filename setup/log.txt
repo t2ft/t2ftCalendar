@@ -74,7 +74,6 @@ Parsing [Files] section, line 171
    Reading version info: D:\tt\Documents\t2ft\000_Projekte\Eigene\Programme\t2ftCalendar\setup\qt.conf
 Parsing [Files] section, line 174
 Compiling [Code] section
-Deleting t2ftCalendar-1.0.0.0.exe from output directory
 Creating setup files
    Updating icons (SETUP.EXE)
    Compressing: D:\tt\Documents\t2ft\000_Projekte\Eigene\Programme\t2ftCalendar\setup\deploy\\D3Dcompiler_47.dll
@@ -148,5 +147,5 @@ Warning: Line 670, Column 3: [Hint] Variable 'RES' never used
 Warning: Line 822, Column 3: [Hint] Variable 'X' never used
 Warning: Line 804, Column 3: [Hint] Variable 'XTCDIRPAGE' never used
 
-Successful compile (12,843 sec). Resulting Setup program filename is:
-D:\tt\Documents\t2ft\000_Projekte\Eigene\Programme\t2ftCalendar\setup\t2ftCalendar-1.0.0.0.exe
+Successful compile (13,625 sec). Resulting Setup program filename is:
+D:\tt\Documents\t2ft\000_Projekte\Eigene\Programme\t2ftCalendar\setup\t2ftCalendar-1.0.0.1.exe
