@@ -37,9 +37,9 @@
 #define CFG_GEOMETRY    "geometry"
 
 #ifdef QT_DEBUG
-static const Qt::WindowFlags wf = Qt::FramelessWindowHint;
+static const Qt::WindowFlags wf = Qt::FramelessWindowHint | Qt::Tool;
 #else
-static const Qt::WindowFlags wf = Qt::WindowStaysOnBottomHint | Qt::FramelessWindowHint;
+static const Qt::WindowFlags wf = Qt::WindowStaysOnBottomHint | Qt::FramelessWindowHint | Qt::Tool;
 #endif
 
 MainWidget::MainWidget(QWidget *parent)
