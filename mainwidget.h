@@ -16,6 +16,7 @@
 #include <QWidget>
 #include <QDate>
 
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWidget;
@@ -28,6 +29,8 @@ class QNetworkAccessManager;
 class QNetworkReply;
 class SchoolVacations;
 class PublicHolidays;
+class ImportedCalendar;
+
 
 class MainWidget : public QWidget
 {
@@ -48,6 +51,7 @@ private slots:
     void updateGeometry();
     void onReplyFinished(QNetworkReply *reply);
     void updateCalendar();
+    void onNewCalendarEntries();
 
 private:
     typedef enum {
@@ -61,6 +65,7 @@ private:
     void updateCalendarYearly(const QDate &date);
     void updateCalendarDaily(const QDate &date);
     QPointF centered(const QRectF &a, const QRectF &b);
+    void appendColor(const ImportedCalendar *ical, const QDate &date, QStringList &events);
 
     Ui::MainWidget *ui;
 
@@ -77,5 +82,10 @@ private:
     QTimer                      *m_timerUpdate;
     QDate                       m_currentDate;
     QDate                       m_workDate;
+    ImportedCalendar            *m_icalSTK;
+    ImportedCalendar            *m_icalThomas;
+    ImportedCalendar            *m_icalT2ft;
+    ImportedCalendar            *m_icalHnF;
+    ImportedCalendar            *m_icalHoS;
 };
 #endif // MAINWIDGET_H

@@ -17,6 +17,7 @@
 #include "schoolvacations.h"
 #include "publicholydays.h"
 #include "tpowereventfilter.h"
+#include "importedcalendar.h"
 
 #include <QMouseEvent>
 #include <QDebug>
@@ -55,11 +56,22 @@ MainWidget::MainWidget(QWidget *parent)
     , m_timerUpdate(nullptr)
     , m_currentDate(QDate::currentDate())
     , m_workDate(m_currentDate)
+    , m_icalSTK(   new ImportedCalendar(m_currentDate.year(), "https://rest.konzertmeister.app/api/v1/ical/d7ede305-dd3d-49d7-af71-4574cd109f06?hideNegative=true&excludeMeetingPoints=true&onlyExternal=false", 3600))
+    , m_icalThomas(new ImportedCalendar(m_currentDate.year(), "https://thblue.my-gateway.de/remote.php/dav/public-calendars/gTws6bpLTNrMqyoa?export",                                                            3907))
+    , m_icalT2ft(  new ImportedCalendar(m_currentDate.year(), "https://thblue.my-gateway.de/remote.php/dav/public-calendars/yfEBqz5pwJ6t2saC?export",                                                            4211))
+    , m_icalHnF(   new ImportedCalendar(m_currentDate.year(), "https://thblue.my-gateway.de/remote.php/dav/public-calendars/b2tesWXFD8zK89kH?export",                                                            4513))
+    , m_icalHoS(   new ImportedCalendar(m_currentDate.year(), "https://thblue.my-gateway.de/remote.php/dav/public-calendars/axpyXR4mSCTiHToX?export",                                                            4817))
 {
     // allow us to dispatch windows power events
     TPowerEventFilter *pFilter = new TPowerEventFilter(this);
     QAbstractEventDispatcher::instance()->installNativeEventFilter(pFilter);
     connect(pFilter, &TPowerEventFilter::ResumeSuspend, this, &MainWidget::updateCalendar);
+
+    connect(m_icalSTK,    &ImportedCalendar::newEntries, this, &MainWidget::onNewCalendarEntries);
+    connect(m_icalThomas, &ImportedCalendar::newEntries, this, &MainWidget::onNewCalendarEntries);
+    connect(m_icalT2ft,   &ImportedCalendar::newEntries, this, &MainWidget::onNewCalendarEntries);
+    connect(m_icalHnF,    &ImportedCalendar::newEntries, this, &MainWidget::onNewCalendarEntries);
+    connect(m_icalHoS,    &ImportedCalendar::newEntries, this, &MainWidget::onNewCalendarEntries);
 
     ui->setupUi(this);
     m_scene = ui->graphicsView->scene();
@@ -75,9 +87,11 @@ MainWidget::MainWidget(QWidget *parent)
     createCalendar();
     updateCalendarYearly(m_currentDate);
     QTimer::singleShot(1, this, SLOT(updateGeometry()));
+
+
     m_timerUpdate = new QTimer(this);
     connect(m_timerUpdate, &QTimer::timeout, this, &MainWidget::updateCalendar);
-#ifdef QT_DEBUG
+#ifdef QT_DEBUG_UPDATE
     m_timerUpdate->start(3000);  // run every 50ms for faster debugging
 #else
     m_timerUpdate->start(3600000);  // run every hour
@@ -89,6 +103,11 @@ MainWidget::~MainWidget()
     delete ui;
     delete m_vacations;
     delete m_holidays;
+    delete m_icalSTK;
+    delete m_icalThomas;
+    delete m_icalT2ft;
+    delete m_icalHnF;
+    delete m_icalHoS;
 }
 
 void MainWidget::closeEvent(QCloseEvent *event)
@@ -198,6 +217,29 @@ void MainWidget::updateCalendar()
     }
     //qDebug() << "--- MainWidget::updateCalendar()";
 }
+
+void MainWidget::onNewCalendarEntries()
+{
+    qDebug() << "+++ MainWidget::onNewCalendarEntries()";
+    for (auto &d : m_days) {
+        QStringList eventColors;
+        appendColor(m_icalSTK,    d->date(), eventColors);
+        appendColor(m_icalThomas, d->date(), eventColors);
+        appendColor(m_icalT2ft,   d->date(), eventColors);
+        appendColor(m_icalHnF,    d->date(), eventColors);
+        appendColor(m_icalHoS,    d->date(), eventColors);
+        d->setEvents(eventColors);
+    }
+    qDebug() << "--- MainWidget::onNewCalendarEntries()";
+}
+
+void MainWidget::appendColor(const ImportedCalendar *ical, const QDate &date, QStringList &events)
+{
+    if (ical && ical->hasEntry(date)) {
+        events.append(ical->color());
+    }
+}
+
 
 
 void MainWidget::updateCalendarYearly(const QDate &date)

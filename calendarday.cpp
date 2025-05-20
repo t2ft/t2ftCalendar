@@ -81,6 +81,8 @@ CalendarDay::CalendarDay(const QDate &date, const QRectF &rect, const QString &h
     }
     m_penText.setStyle(Qt::SolidLine);
     m_penText.setColor(isPublicHoliday ? Qt::red : Qt::black);
+
+    m_rcEvent.setRect(m_rect.left()+3, m_rect.top()+3, 5, 5);
 }
 
 
@@ -106,6 +108,12 @@ void CalendarDay::paint(QPainter* painter, const QStyleOptionGraphicsItem* optio
     painter->setFont(m_fontDate);
     painter->drawText(m_rect.adjusted( 0, 0,-1,-1), Qt::AlignRight | Qt::AlignBottom, m_stringDate);
 
+    QRectF rc = m_rcEvent;
+    for (auto &e : m_events) {
+        painter->fillRect(rc, QColor(e));
+        rc.translate(rc.width()+2, 0);
+    }
+
     if (!m_holidayName.isEmpty()) {
         painter->setPen(m_penText);
         painter->setFont(m_fontHoliday);
@@ -118,6 +126,15 @@ void CalendarDay::paint(QPainter* painter, const QStyleOptionGraphicsItem* optio
         painter->setFont(m_fontWeek);
         painter->drawText(m_rect.adjusted(0,0,-2,0), Qt::AlignRight | Qt::AlignVCenter, m_stringWeek);
     }
+}
+
+void CalendarDay::setEvents(const QStringList &colors)
+{
+    m_events.clear();
+    for (const auto &c : colors) {
+        m_events << QColor(c);
+    }
+    update();
 }
 
 void CalendarDay::updateDay(const QDate &date)

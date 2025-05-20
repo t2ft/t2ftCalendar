@@ -29,12 +29,16 @@ public:
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
+    void setEvents(const QStringList &colors);
     void updateDay(const QDate &date);
+
+    QDate date() const { return m_date; }
 
 private:
     QDate           m_date;
     QRectF          m_rect;
     QRectF          m_rcHoliday;
+    QRectF          m_rcEvent;
     QString         m_holidayName;
     QFont           m_fontDay;
     QFont           m_fontDate;
@@ -49,6 +53,7 @@ private:
     QString         m_stringWeek;
     QTextOption     m_toHoliday;
     QList<QLineF>   m_linesWeek;
+    QList<QColor>   m_events;
 };
 
 #endif // CALENDARDAY_H

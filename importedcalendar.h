@@ -1,0 +1,67 @@
+// ***************************************************************************
+// <project description>
+// ---------------------------------------------------------------------------
+// importedcalendar.h
+// <file description>
+// ---------------------------------------------------------------------------
+// Copyright (C) 2025 by t2ft - Thomas Thanner
+// Waldstrasse 15, 86399 Bobingen, Germany
+// thomas@t2ft.de
+// ---------------------------------------------------------------------------
+// 2025-5-20  tt  Initial version created
+// ***************************************************************************
+#ifndef IMPORTEDCALENDAR_H
+#define IMPORTEDCALENDAR_H
+
+#include <QObject>
+#include <QDateTime>
+
+class QTimer;
+class QNetworkAccessManager;
+class QNetworkReply;
+
+class ImportedCalendar : public QObject
+{
+    Q_OBJECT
+
+public:
+    explicit ImportedCalendar(QObject *parent = nullptr);
+    ImportedCalendar(int year, const QString &link, qint64 updateSeconds, QObject *parent = nullptr);
+    ~ImportedCalendar();
+
+    void setLink(const QString &link);
+    void setUpdatePeriod(qint64 seconds);
+    void update();
+
+    bool isValid() const;
+
+    int size() const { return m_dates.size(); }
+    QDate entry(int index) const {return m_dates.value(index); }
+    bool hasEntry(const QDate &date) const { return m_dates.contains(date); }
+    QString color() const { return m_color; }
+    QString name() const { return m_name; }
+
+signals:
+    void newEntries();
+
+protected slots:
+    void onTimer();
+    void onReplyFinished(QNetworkReply *reply);
+
+protected:
+    void killUpdateTimer();
+    void startUpdateTimer();
+    void clearEntries();
+    QList<QDate> extractAllDatesForYear(const QByteArray &icsContent, int year);
+
+    int                     m_year;
+    QString                 m_link;
+    qint64                  m_updatePeriod;
+    QList<QDate>            m_dates;
+    QTimer                  *m_updateTimer;
+    QNetworkAccessManager   *m_accessManager;
+    QString                 m_color;
+    QString                 m_name;
+};
+
+#endif // IMPORTEDCALENDAR_H
