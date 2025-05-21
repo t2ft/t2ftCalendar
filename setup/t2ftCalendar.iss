@@ -167,6 +167,8 @@ Source: {#deployDir}\vcredist*.*; DestDir: "{tmp}"; Flags: overwritereadonly ign
 #else
 Source: "{#minGW_Libs}\libc++.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#minGW_Libs}\libunwind.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\msys64\mingw64\bin\libwinpthread-1.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:/tt/Documents/t2ft/000_Projekte/Eigene/Programme/libical/libical-3.0.20/build/bin/libical.dll"; DestDir: {app}; Flags: ignoreversion
 #endif
 Source: "qt.conf"; DestDir: "{app}"; Flags: sharedfile overwritereadonly restartreplace uninsnosharedfileprompt
 
