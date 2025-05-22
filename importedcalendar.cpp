@@ -176,7 +176,7 @@ QList<QDate> ImportedCalendar::extractAllDatesForYear(const QByteArray &icsConte
                 m_name = QString::fromUtf8(value);
                 qDebug() << "Kalender-Name:" << m_name;
             } else if (qstricmp(propName, "X-APPLE-CALENDAR-COLOR") == 0) {
-                m_color = QString::fromUtf8(value);
+                m_color = QString::fromUtf8(value).left(7);
                 qDebug() << "Kalender-Farbe:" << m_color;
             }
         }
