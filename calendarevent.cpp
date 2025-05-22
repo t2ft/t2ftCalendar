@@ -19,10 +19,9 @@ CalendarEvent::CalendarEvent()
 
 CalendarEvent::CalendarEvent(const QDate &date, const QString &summary, const QString &color)
     : m_date(date)
-    , m_summary(summary)
     , m_color(color)
 {
-
+    m_summary = "   " + QLocale::system().toString(date, "dd.MMMM") + "\n" + summary;
 }
 
 bool CalendarEvent::operator<(const CalendarEvent &other) const
