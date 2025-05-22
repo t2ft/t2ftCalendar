@@ -220,7 +220,7 @@ void MainWidget::updateCalendar()
 
 void MainWidget::onNewCalendarEntries()
 {
-    qDebug() << "+++ MainWidget::onNewCalendarEntries()";
+//    qDebug() << "+++ MainWidget::onNewCalendarEntries()";
     for (auto &d : m_days) {
         QStringList eventColors;
         appendColor(m_icalSTK,    d->date(), eventColors);
@@ -230,7 +230,7 @@ void MainWidget::onNewCalendarEntries()
         appendColor(m_icalHoS,    d->date(), eventColors);
         d->setEvents(eventColors);
     }
-    qDebug() << "--- MainWidget::onNewCalendarEntries()";
+//    qDebug() << "--- MainWidget::onNewCalendarEntries()";
 }
 
 void MainWidget::appendColor(const ImportedCalendar *ical, const QDate &date, QStringList &events)
