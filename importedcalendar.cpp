@@ -98,6 +98,16 @@ void ImportedCalendar::update()
     qDebug() << "--- ImportedCalendar::update()";
 }
 
+bool ImportedCalendar::hasEntry(const QDate &date) const
+{
+    for (const auto &e : m_events) {
+        if (e.date()==date) {
+            return true;
+        }
+    }
+    return false;
+}
+
 
 void ImportedCalendar::onReplyFinished(QNetworkReply *reply)
 {
@@ -106,7 +116,7 @@ void ImportedCalendar::onReplyFinished(QNetworkReply *reply)
         QByteArray data = reply->readAll();
         if (!data.isEmpty()) {
             clearEntries();
-            m_dates = extractAllDatesForYear(data, m_year);
+            m_events = extractAllDatesForYear(data, m_year);
             emit newEntries();
         }
     }
@@ -133,7 +143,7 @@ void ImportedCalendar::startUpdateTimer()
 void ImportedCalendar::clearEntries()
 {
 //    qDebug() << "+++ ImportedCalendar::clearEntries()";
-    m_dates.clear();
+    m_events.clear();
     m_color.clear();
     m_name.clear();
 //    qDebug() << "--- ImportedCalendar::clearEntries()";
@@ -151,15 +161,16 @@ void ImportedCalendar::killUpdateTimer()
 }
 
 
-QList<QDate> ImportedCalendar::extractAllDatesForYear(const QByteArray &icsContent, int year)
+QList<CalendarEvent> ImportedCalendar::extractAllDatesForYear(const QByteArray &icsContent, int year)
 {
-    QList<QDate> resultDates;
-    QSet<QDate> dateSet;
+    QList<CalendarEvent> resultEvents;
+    QSet<CalendarEvent> eventSet;
+    QString summary;
 
     icalcomponent* calendar = icalparser_parse_string(icsContent.constData());
     if (!calendar) {
         qWarning() << "ICS parsing failed.";
-        return resultDates;
+        return resultEvents;
     }
 
     // VCALENDAR-Level Properties durchgehen
@@ -182,6 +193,7 @@ QList<QDate> ImportedCalendar::extractAllDatesForYear(const QByteArray &icsConte
         }
     }
     if (m_color.isEmpty()) {
+        // default to bright red, if no color is given in ICAL data
         m_color = "#FF0000";
     }
 
@@ -194,7 +206,7 @@ QList<QDate> ImportedCalendar::extractAllDatesForYear(const QByteArray &icsConte
         if (icaltime_is_null_time(dtstart))
             continue;
 
-        icaltimetype dtend = icalcomponent_get_dtend(event); // kann null sein
+        summary = icalcomponent_get_summary(event);
 
         // Berechne Dauer
         icaldurationtype dur = icalcomponent_get_duration(event);
@@ -231,9 +243,9 @@ QList<QDate> ImportedCalendar::extractAllDatesForYear(const QByteArray &icsConte
             icaltimetype occ;
             while (!(icaltime_is_null_time(occ = icalrecur_iterator_next(recurIter)))) {
                 for (int i = 0; i < durationDays; ++i) {
-                    QDate occDate = QDate(occ.year, occ.month, occ.day).addDays(i);
-                    if (occDate.year() == year && !excludedDates.contains(occDate))
-                        dateSet.insert(occDate);
+                    CalendarEvent occEvent = CalendarEvent(QDate(occ.year, occ.month, occ.day).addDays(i), summary);
+                    if (occEvent.date().year() == year && !excludedDates.contains(occEvent.date()))
+                        eventSet.insert(occEvent);
                 }
             }
 
@@ -244,7 +256,7 @@ QList<QDate> ImportedCalendar::extractAllDatesForYear(const QByteArray &icsConte
                 QDate date(dtstart.year, dtstart.month, dtstart.day);
                 QDate occDate = date.addDays(i);
                 if (occDate.year() == year && !excludedDates.contains(occDate))
-                    dateSet.insert(occDate);
+                    eventSet.insert(CalendarEvent(occDate, summary));
             }
         }
 
@@ -260,15 +272,17 @@ QList<QDate> ImportedCalendar::extractAllDatesForYear(const QByteArray &icsConte
                     QDate occDate(rdate.year, rdate.month, rdate.day);
                     occDate = occDate.addDays(i);
                     if (occDate.year() == year && !excludedDates.contains(occDate))
-                        dateSet.insert(occDate);
+                        eventSet.insert(CalendarEvent(occDate, summary));
                 }
             }
         }
     }
 
     // Ergebnis übertragen
-    resultDates = QList<QDate>(dateSet.begin(), dateSet.end());
-    std::sort(resultDates.begin(), resultDates.end());
+    resultEvents = QList<CalendarEvent>(eventSet.begin(), eventSet.end());
+    std::sort(resultEvents.begin(), resultEvents.end());
 
-    return resultDates;
+    icalcomponent_free(calendar);
+
+    return resultEvents;
 }

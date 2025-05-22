@@ -23,6 +23,7 @@ DEFINES += APP_DOMAIN=\\\"t2ft.de\\\"
 
 SOURCES += \
     calendarday.cpp \
+    calendarevent.cpp \
     importedcalendar.cpp \
     main.cpp \
     mainwidget.cpp \
@@ -36,6 +37,7 @@ SOURCES += \
 
 HEADERS += \
     calendarday.h \
+    calendarevent.h \
     importedcalendar.h \
     mainwidget.h \
     mouseeventfilter.h \
