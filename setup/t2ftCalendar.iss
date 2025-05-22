@@ -7,8 +7,9 @@
 ;                   to make this work, these two custom build steps have to be
 ;                   added to the release build configuration in qtCreator:
 ;                1) Copy File:
-;                   Source:       %{ActiveProject:RunConfig:Executable:FilePath}
-;                   Destination:  %{sourceDir}\setup\deploy\%{ActiveProject:RunConfig:Executable:FileName}
+;					Command:      cmd.exe
+;                   Arguments:    /C "copy %{ActiveProject:RunConfig:Executable:NativeFilePath} %{sourceDir}\setup\deploy\"
+;					Working Directory:  %{buildDir}
 ;                2) Command:            windeployqt.exe
 ;                   Arguments:          --dir %{sourceDir}\setup\deploy\ %{ActiveProject:RunConfig:Executable:FilePath}
 ;                   Working Directory:  %{sourceDir}\setup\deploy
