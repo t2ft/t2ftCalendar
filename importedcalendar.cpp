@@ -98,6 +98,16 @@ void ImportedCalendar::update()
     qDebug() << "--- ImportedCalendar::update()";
 }
 
+CalendarEvent ImportedCalendar::entry(const QDate &date) const
+{
+    for (const auto &e : m_events) {
+        if (e.date()==date) {
+            return e;
+        }
+    }
+    return CalendarEvent();
+}
+
 bool ImportedCalendar::hasEntry(const QDate &date) const
 {
     for (const auto &e : m_events) {
@@ -243,7 +253,7 @@ QList<CalendarEvent> ImportedCalendar::extractAllDatesForYear(const QByteArray &
             icaltimetype occ;
             while (!(icaltime_is_null_time(occ = icalrecur_iterator_next(recurIter)))) {
                 for (int i = 0; i < durationDays; ++i) {
-                    CalendarEvent occEvent = CalendarEvent(QDate(occ.year, occ.month, occ.day).addDays(i), summary);
+                    CalendarEvent occEvent = CalendarEvent(QDate(occ.year, occ.month, occ.day).addDays(i), summary, m_color);
                     if (occEvent.date().year() == year && !excludedDates.contains(occEvent.date()))
                         eventSet.insert(occEvent);
                 }
@@ -256,7 +266,7 @@ QList<CalendarEvent> ImportedCalendar::extractAllDatesForYear(const QByteArray &
                 QDate date(dtstart.year, dtstart.month, dtstart.day);
                 QDate occDate = date.addDays(i);
                 if (occDate.year() == year && !excludedDates.contains(occDate))
-                    eventSet.insert(CalendarEvent(occDate, summary));
+                    eventSet.insert(CalendarEvent(occDate, summary, m_color));
             }
         }
 
@@ -272,7 +282,7 @@ QList<CalendarEvent> ImportedCalendar::extractAllDatesForYear(const QByteArray &
                     QDate occDate(rdate.year, rdate.month, rdate.day);
                     occDate = occDate.addDays(i);
                     if (occDate.year() == year && !excludedDates.contains(occDate))
-                        eventSet.insert(CalendarEvent(occDate, summary));
+                        eventSet.insert(CalendarEvent(occDate, summary, m_color));
                 }
             }
         }

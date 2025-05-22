@@ -11,6 +11,7 @@
 // 2025-5-10  tt  Initial version created
 // ***************************************************************************
 #include "caldaygraphicsitem.h"
+#include "eventgraphicsitem.h"
 #include <QPainter>
 
 
@@ -108,12 +109,6 @@ void CalDayGraphicsItem::paint(QPainter* painter, const QStyleOptionGraphicsItem
     painter->setFont(m_fontDate);
     painter->drawText(m_rect.adjusted( 0, 0,-1,-1), Qt::AlignRight | Qt::AlignBottom, m_stringDate);
 
-    QRectF rc = m_rcEvent;
-    for (auto &e : m_events) {
-        painter->fillRect(rc, QColor(e));
-        rc.translate(rc.width()+2, 0);
-    }
-
     if (!m_holidayName.isEmpty()) {
         painter->setPen(m_penText);
         painter->setFont(m_fontHoliday);
@@ -128,11 +123,15 @@ void CalDayGraphicsItem::paint(QPainter* painter, const QStyleOptionGraphicsItem
     }
 }
 
-void CalDayGraphicsItem::setEvents(const QStringList &colors)
+void CalDayGraphicsItem::setEvents(const QList<CalendarEvent> &events)
 {
+    qDeleteAll(m_events);
     m_events.clear();
-    for (const auto &c : colors) {
-        m_events << QColor(c);
+    QRectF rc = m_rcEvent;
+    for (const auto &e : events) {
+        EventGraphicsItem *egi = new EventGraphicsItem(e.summary(), e.color(), rc, this);
+        m_events.append(egi);
+        rc.translate(rc.width()+2, 0);
     }
     update();
 }

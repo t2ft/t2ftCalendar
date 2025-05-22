@@ -38,6 +38,7 @@ public:
 
     int size() const { return m_events.size(); }
     CalendarEvent entry(int index) const {return m_events.value(index); }
+    CalendarEvent entry(const QDate &date) const;
     bool hasEntry(const QDate &date) const;
     QString color() const { return m_color; }
     QString name() const { return m_name; }

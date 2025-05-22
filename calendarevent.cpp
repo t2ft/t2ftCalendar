@@ -17,9 +17,10 @@ CalendarEvent::CalendarEvent()
 
 }
 
-CalendarEvent::CalendarEvent(const QDate &date, const QString &summary)
+CalendarEvent::CalendarEvent(const QDate &date, const QString &summary, const QString &color)
     : m_date(date)
     , m_summary(summary)
+    , m_color(color)
 {
 
 }

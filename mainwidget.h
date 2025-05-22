@@ -13,6 +13,8 @@
 #ifndef MAINWIDGET_H
 #define MAINWIDGET_H
 
+#include "calendarevent.h"
+
 #include <QWidget>
 #include <QDate>
 
@@ -40,11 +42,7 @@ public:
     MainWidget(QWidget *parent = nullptr);
     ~MainWidget();
 
-    void mouseMoveEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
-
 protected:
-    void mousePressEvent(QMouseEvent *event) override;
     void closeEvent(QCloseEvent *event) override;
 
 private slots:
@@ -52,6 +50,8 @@ private slots:
     void onReplyFinished(QNetworkReply *reply);
     void updateCalendar();
     void onNewCalendarEntries();
+    void onMouseResize(QSize sz);
+    void onMouseMove(QPoint pt);
 
 private:
     typedef enum {
@@ -65,16 +65,12 @@ private:
     void updateCalendarYearly(const QDate &date);
     void updateCalendarDaily(const QDate &date);
     QPointF centered(const QRectF &a, const QRectF &b);
-    void appendColor(const ImportedCalendar *ical, const QDate &date, QStringList &events);
+    void appendEvent(const ImportedCalendar *ical, const QDate &date, QList<CalendarEvent> &events);
 
     Ui::MainWidget *ui;
 
-    bool                        m_mouseResizing;
-    bool                        m_mouseMoving;
-    QSizeF                      m_startSize;
-    QPointF                     m_startPosition;
     QGraphicsScene              *m_scene;
-    QList<CalDayGraphicsItem*>         m_days;
+    QList<CalDayGraphicsItem*>  m_days;
     QNetworkAccessManager       *m_accessManager;
     RequestState                m_requestState;
     PublicHolidays              *m_holidays;

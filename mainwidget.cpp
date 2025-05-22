@@ -12,7 +12,6 @@
 // ***************************************************************************
 #include "mainwidget.h"
 #include "ui_mainwidget.h"
-#include "mouseeventfilter.h"
 #include "caldaygraphicsitem.h"
 #include "schoolvacations.h"
 #include "publicholydays.h"
@@ -46,8 +45,6 @@ static const Qt::WindowFlags wf = Qt::WindowStaysOnBottomHint | Qt::FramelessWin
 MainWidget::MainWidget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::MainWidget)
-    , m_mouseResizing(false)
-    , m_mouseMoving(false)
     , m_scene(nullptr)
     , m_accessManager(nullptr)
     , m_requestState(RequestIdle)
@@ -74,6 +71,9 @@ MainWidget::MainWidget(QWidget *parent)
     connect(m_icalHoS,    &ImportedCalendar::newEntries, this, &MainWidget::onNewCalendarEntries);
 
     ui->setupUi(this);
+    connect(ui->graphicsView, &ZoomView::mouseMove, this, &MainWidget::onMouseMove);
+    connect(ui->graphicsView, &ZoomView::mouseResize, this, &MainWidget::onMouseResize);
+
     m_scene = ui->graphicsView->scene();
     if (m_scene == nullptr) {
         qDebug() << "creation of a new QGraphicsSene is required";
@@ -82,12 +82,13 @@ MainWidget::MainWidget(QWidget *parent)
     }
     setWindowFlags(wf);
     // Installation des Ereignisfilters
-    MouseEventFilter* filter = new MouseEventFilter(this);
-    ui->graphicsView->viewport()->installEventFilter(filter);
     createCalendar();
     updateCalendarYearly(m_currentDate);
     QTimer::singleShot(1, this, SLOT(updateGeometry()));
 
+    setMouseTracking(true);
+    ui->graphicsView->setMouseTracking(true);
+    ui->graphicsView->viewport()->setMouseTracking(true);
 
     m_timerUpdate = new QTimer(this);
     connect(m_timerUpdate, &QTimer::timeout, this, &MainWidget::updateCalendar);
@@ -222,21 +223,38 @@ void MainWidget::onNewCalendarEntries()
 {
 //    qDebug() << "+++ MainWidget::onNewCalendarEntries()";
     for (auto &d : m_days) {
-        QStringList eventColors;
-        appendColor(m_icalSTK,    d->date(), eventColors);
-        appendColor(m_icalThomas, d->date(), eventColors);
-        appendColor(m_icalT2ft,   d->date(), eventColors);
-        appendColor(m_icalHnF,    d->date(), eventColors);
-        appendColor(m_icalHoS,    d->date(), eventColors);
-        d->setEvents(eventColors);
+        QList<CalendarEvent> events;
+        appendEvent(m_icalSTK,    d->date(), events);
+        appendEvent(m_icalThomas, d->date(), events);
+        appendEvent(m_icalT2ft,   d->date(), events);
+        appendEvent(m_icalHnF,    d->date(), events);
+        appendEvent(m_icalHoS,    d->date(), events);
+        d->setEvents(events);
     }
 //    qDebug() << "--- MainWidget::onNewCalendarEntries()";
 }
 
-void MainWidget::appendColor(const ImportedCalendar *ical, const QDate &date, QStringList &events)
+void MainWidget::onMouseResize(QSize sz)
 {
-    if (ical && ical->hasEntry(date)) {
-        events.append(ical->color());
+    qDebug() << "+++ MainWidget::onMouseResize(sz=" << sz << ")";
+    resize(sz);
+    qDebug() << "--- MainWidget::onMouseResize()";
+}
+
+void MainWidget::onMouseMove(QPoint pt)
+{
+    qDebug() << "+++ MainWidget::onMouseMove(pt=" << pt << ")";
+    move(pt);
+    qDebug() << "--- MainWidget::onMouseMove()";
+}
+
+void MainWidget::appendEvent(const ImportedCalendar *ical, const QDate &date, QList<CalendarEvent> &events)
+{
+    if (ical) {
+        CalendarEvent e = ical->entry(date);
+        if (e.isValid()) {
+            events.append(e);
+        }
     }
 }
 
@@ -386,63 +404,4 @@ QPointF MainWidget::centered(const QRectF &a, const QRectF &b)
     QPointF pt = QPointF(b.left() + (b.width()-a.width())/2., b.top() + (b.height()-a.height())/2.);
     //qDebug() << "--- MainWidget::centered() =" << pt;
     return pt;
-}
-
-void MainWidget::mousePressEvent(QMouseEvent *event)
-{
-//    qDebug() << "+++ MainWidget::mousePressEvent(" << event->pos() << "(" << event->globalPosition() << ") /" << event->buttons() << ")";
-    switch (event->button()) {
-    case Qt::RightButton:
-        m_mouseResizing = true;
-        m_startSize = size();
-        m_startPosition = event->pos();
-//        qDebug() << "start resizing from" << m_startSize << "at" << m_startPosition;
-        break;
-    case Qt::MiddleButton:
-        m_mouseMoving = true;
-        m_startPosition = event->globalPosition() - pos();
-//        qDebug() << "start moving from" << pos() << "with delta" << m_startPosition;
-        break;
-    default:
-        break;
-    }
-//    qDebug() << "m_mouseMoving=" << m_mouseMoving;
-//    qDebug() << "m_mouseResizing=" << m_mouseResizing;
-//    qDebug() << "--- MainWidget::mousePressEvent()";
-}
-
-void MainWidget::mouseMoveEvent(QMouseEvent *event)
-{
-//    qDebug() << "+++ MainWidget::mouseMoveEvent(" << event->pos() << "/" << event->buttons() << ")";
-//    qDebug() << "m_mouseMoving=" << m_mouseMoving;
-//    qDebug() << "m_mouseResizing=" << m_mouseResizing;
-    if (m_mouseMoving) {
-        QPointF pt = event->globalPosition()-m_startPosition;
-//        qDebug() << "moving to" << pt;
-        move(pt.toPoint());
-    }
-    if (m_mouseResizing) {
-        QSize sz = QSize(m_startSize.width() + (event->pos().x() - m_startPosition.x()), m_startSize.height() + (event->pos().y() - m_startPosition.y()));
-//        qDebug() << "resizing to" << sz;
-        resize(sz);
-    }
-//    qDebug() << "--- MainWidget::mouseMoveEvent()";
-}
-
-void MainWidget::mouseReleaseEvent(QMouseEvent *event)
-{
-//    qDebug() << "+++ MainWidget::mouseReleaseEvent(" << event->pos() << "/" << event->buttons() << ")";
-    switch (event->button()) {
-    case Qt::RightButton:
-        m_mouseResizing = false;
-//        qDebug() << "resizing done";
-        break;
-    case Qt::MiddleButton:
-        m_mouseMoving = false;
-//        qDebug() << "moving done";
-        break;
-    default:
-        break;
-    }
-//    qDebug() << "--- MainWidget::mouseReleaseEvent()";
 }

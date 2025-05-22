@@ -13,6 +13,8 @@
 #ifndef CALDAYGRAPHICSITEM_H
 #define CALDAYGRAPHICSITEM_H
 
+#include "calendarevent.h"
+
 #include <QGraphicsItem>
 #include <QDate>
 #include <QFont>
@@ -20,6 +22,8 @@
 #include <QPen>
 #include <QTextOption>
 #include <QLineF>
+
+class EventGraphicsItem;
 
 class CalDayGraphicsItem : public QGraphicsItem
 {
@@ -29,31 +33,31 @@ public:
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
-    void setEvents(const QStringList &colors);
+    void setEvents(const QList<CalendarEvent> &events);
     void updateDay(const QDate &date);
 
     QDate date() const { return m_date; }
 
 private:
-    QDate           m_date;
-    QRectF          m_rect;
-    QRectF          m_rcHoliday;
-    QRectF          m_rcEvent;
-    QString         m_holidayName;
-    QFont           m_fontDay;
-    QFont           m_fontDate;
-    QFont           m_fontHoliday;
-    QFont           m_fontWeek;
-    QBrush          m_brushBackground;
-    QPen            m_penText;
-    QPen            m_penBorder;
-    QPen            m_penWeek;
-    QString         m_stringDay;
-    QString         m_stringDate;
-    QString         m_stringWeek;
-    QTextOption     m_toHoliday;
-    QList<QLineF>   m_linesWeek;
-    QList<QColor>   m_events;
+    QDate                       m_date;
+    QRectF                      m_rect;
+    QRectF                      m_rcHoliday;
+    QRectF                      m_rcEvent;
+    QString                     m_holidayName;
+    QFont                       m_fontDay;
+    QFont                       m_fontDate;
+    QFont                       m_fontHoliday;
+    QFont                       m_fontWeek;
+    QBrush                      m_brushBackground;
+    QPen                        m_penText;
+    QPen                        m_penBorder;
+    QPen                        m_penWeek;
+    QString                     m_stringDay;
+    QString                     m_stringDate;
+    QString                     m_stringWeek;
+    QTextOption                 m_toHoliday;
+    QList<QLineF>               m_linesWeek;
+    QList<EventGraphicsItem*>   m_events;
 };
 
 #endif // CALDAYGRAPHICSITEM_H

@@ -24,10 +24,10 @@ DEFINES += APP_DOMAIN=\\\"t2ft.de\\\"
 SOURCES += \
     caldaygraphicsitem.cpp \
     calendarevent.cpp \
+    eventgraphicsitem.cpp \
     importedcalendar.cpp \
     main.cpp \
     mainwidget.cpp \
-    mouseeventfilter.cpp \
     publicholydays.cpp \
     schoolvacations.cpp \
     tapp.cpp \
@@ -38,9 +38,9 @@ SOURCES += \
 HEADERS += \
     caldaygraphicsitem.h \
     calendarevent.h \
+    eventgraphicsitem.h \
     importedcalendar.h \
     mainwidget.h \
-    mouseeventfilter.h \
     publicholydays.h \
     schoolvacations.h \
     tapp.h \

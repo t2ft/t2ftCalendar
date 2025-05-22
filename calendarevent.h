@@ -20,18 +20,22 @@ class CalendarEvent
 {
 public:
     CalendarEvent();
-    CalendarEvent(const QDate &date, const QString &summary);
+    CalendarEvent(const QDate &date, const QString &summary, const QString &color);
 
     QDate date() const  { return m_date; }
     QString summary() const  { return m_summary; }
+    QString color() const { return m_color; }
+
     bool isNull() const { return (m_date.isNull() && m_summary.isNull()); }
     bool isValid() const { return (m_date.isValid() && !m_summary.isEmpty()); }
+
     bool operator<(const CalendarEvent &other) const;
     bool operator==(const CalendarEvent &other) const;
 
 protected:
     QDate       m_date;
     QString     m_summary;
+    QString     m_color;
 };
 
 inline size_t qHash(const CalendarEvent &key, size_t seed){
