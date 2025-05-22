@@ -120,58 +120,58 @@ void ImportedCalendar::onReplyFinished(QNetworkReply *reply)
 
 void ImportedCalendar::startUpdateTimer()
 {
-    qDebug() << "+++ ImportedCalendar::startUpdateTimer()";
+//    qDebug() << "+++ ImportedCalendar::startUpdateTimer()";
     killUpdateTimer();
     if (m_updatePeriod>0) {
         m_updateTimer = new QTimer(this);
         connect(m_updateTimer, &QTimer::timeout, this, &ImportedCalendar::update);
         m_updateTimer->start(m_updatePeriod*1000);
     }
-    qDebug() << "--- ImportedCalendar::startUpdateTimer()";
+//    qDebug() << "--- ImportedCalendar::startUpdateTimer()";
 }
 
 void ImportedCalendar::clearEntries()
 {
-    qDebug() << "+++ ImportedCalendar::clearEntries()";
+//    qDebug() << "+++ ImportedCalendar::clearEntries()";
     m_dates.clear();
     m_color.clear();
     m_name.clear();
-    qDebug() << "--- ImportedCalendar::clearEntries()";
+//    qDebug() << "--- ImportedCalendar::clearEntries()";
 }
 
 
 void ImportedCalendar::killUpdateTimer()
 {
-    qDebug() << "+++ ImportedCalendar::killUpdateTimer()";
+//    qDebug() << "+++ ImportedCalendar::killUpdateTimer()";
     if (m_updateTimer) {
         delete m_updateTimer;
         m_updateTimer = nullptr;
     }
-    qDebug() << "--- ImportedCalendar::killUpdateTimer()";
+//    qDebug() << "--- ImportedCalendar::killUpdateTimer()";
 }
 
 
-QList<QDate> ImportedCalendar::extractAllDatesForYear(const QByteArray& icsContent, int year)
+QList<QDate> ImportedCalendar::extractAllDatesForYear(const QByteArray &icsContent, int year)
 {
-    QList<QDate> result;
+    QList<QDate> resultDates;
+    QSet<QDate> dateSet;
 
-    icalcomponent* root = icalparser_parse_string(icsContent.constData());
-    if (!root) {
+    icalcomponent* calendar = icalparser_parse_string(icsContent.constData());
+    if (!calendar) {
         qWarning() << "ICS parsing failed.";
-        return result;
+        return resultDates;
     }
 
     // VCALENDAR-Level Properties durchgehen
-    for (icalproperty* prop = icalcomponent_get_first_property(root, ICAL_ANY_PROPERTY);
+    for (icalproperty* prop = icalcomponent_get_first_property(calendar, ICAL_ANY_PROPERTY);
          prop != nullptr;
-         prop = icalcomponent_get_next_property(root, ICAL_ANY_PROPERTY)) {
+         prop = icalcomponent_get_next_property(calendar, ICAL_ANY_PROPERTY)) {
 
         icalproperty_kind kind = icalproperty_isa(prop);
 
         if (kind == ICAL_X_PROPERTY) {
             const char* propName = icalproperty_get_x_name(prop);
             const char* value = icalproperty_get_value_as_string(prop);
-
             if (qstricmp(propName, "X-WR-CALNAME") == 0) {
                 m_name = QString::fromUtf8(value);
                 qDebug() << "Kalender-Name:" << m_name;
@@ -185,107 +185,90 @@ QList<QDate> ImportedCalendar::extractAllDatesForYear(const QByteArray& icsConte
         m_color = "#FF0000";
     }
 
-    // Zeitraum für das Jahr
-    QDateTime startOfYear(QDate(year, 1, 1), QTime(0, 0), QTimeZone::UTC);
-    QDateTime endOfYear(QDate(year, 12, 31).addDays(1), QTime(0, 0), QTimeZone::UTC);  // exklusiv
+    // Durchlaufe alle VEVENT-Komponenten
+    for (icalcomponent* event = icalcomponent_get_first_component(calendar, ICAL_VEVENT_COMPONENT);
+         event != nullptr;
+         event = icalcomponent_get_next_component(calendar, ICAL_VEVENT_COMPONENT))
+    {
+        icaltimetype dtstart = icalcomponent_get_dtstart(event);
+        if (icaltime_is_null_time(dtstart))
+            continue;
 
-    icaltimezone* berlinTz = icaltimezone_get_builtin_timezone("Europe/Berlin");
+        icaltimetype dtend = icalcomponent_get_dtend(event); // kann null sein
 
-    for (icalcomponent* comp = icalcomponent_get_first_component(root, ICAL_VEVENT_COMPONENT);
-         comp != nullptr;
-         comp = icalcomponent_get_next_component(root, ICAL_VEVENT_COMPONENT)) {
+        // Berechne Dauer
+        icaldurationtype dur = icalcomponent_get_duration(event);
+        int durationDays = std::max(1, static_cast<int>((icaldurationtype_as_int(dur) + 24.*3600-1)/ (24.*3600))); // always round up
+        // Wiederholungen verarbeiten (RRULE, RDATE, EXDATE)
+        icalrecur_iterator* recurIter = nullptr;
+        icalproperty* rruleProp = icalcomponent_get_first_property(event, ICAL_RRULE_PROPERTY);
 
-        icalproperty* dtstartProp = icalcomponent_get_first_property(comp, ICAL_DTSTART_PROPERTY);
-        if (!dtstartProp) continue;
+#ifdef QT_DEBUG_REPEATS
+        if ((dtstart.year==year) && (durationDays>1)) {
+            qDebug().nospace() << "calendar " << m_name << ": dtstart = " << icaltime_as_ical_string_r(dtstart) << ", dtend = " << icaltime_as_ical_string(dtend);
+            qDebug() << "  -> \"" << icalcomponent_get_summary(event) << "\"";
+            qDebug() << "  -> durationDays =" << durationDays << "rruleProp =" << rruleProp;
+        }
+#endif
 
-        icaltimetype dtstart = icalproperty_get_dtstart(dtstartProp);
-        icaltimetype dtstartUtc = icaltime_convert_to_zone(dtstart, berlinTz);
-
-        bool hasRRule = (icalcomponent_get_first_property(comp, ICAL_RRULE_PROPERTY) != nullptr);
-        bool hasRDate = (icalcomponent_get_first_property(comp, ICAL_RDATE_PROPERTY) != nullptr);
-
-        if (hasRRule) {
-            // Wiederholungen mit RRULE
-            icalproperty* rruleProp = icalcomponent_get_first_property(comp, ICAL_RRULE_PROPERTY);
-            struct icalrecurrencetype recur = icalproperty_get_rrule(rruleProp);
-
-            icalrecur_iterator* rit = icalrecur_iterator_new(recur, dtstart);
-            if (!rit) continue;
-
-            while (true) {
-                icaltimetype next = icalrecur_iterator_next(rit);
-                if (icaltime_is_null_time(next)) break;
-
-                icaltimetype nextInBerlin = icaltime_convert_to_zone(next, berlinTz);
-                QDate date(nextInBerlin.year, nextInBerlin.month, nextInBerlin.day);
-                QDateTime dt(date, QTime(0, 0), QTimeZone::UTC);
-
-                if (dt >= startOfYear && dt < endOfYear) {
-                    // EXDATE prüfen
-                    bool excluded = false;
-                    for (icalproperty* exdateProp = icalcomponent_get_first_property(comp, ICAL_EXDATE_PROPERTY);
-                         exdateProp != nullptr;
-                         exdateProp = icalcomponent_get_next_property(comp, ICAL_EXDATE_PROPERTY)) {
-
-                        icaltimetype ex = icalproperty_get_exdate(exdateProp);
-                        ex = icaltime_convert_to_zone(ex, berlinTz);
-                        QDate exdate(ex.year, ex.month, ex.day);
-                        if (date == exdate) {
-                            excluded = true;
-                            break;
-                        }
-                    }
-
-                    if (!excluded)
-                        result.append(date);
-                }
-
-                // Frühzeitiger Abbruch
-                QDateTime currentDate(QDate(next.year, next.month, next.day), QTime(0, 0), QTimeZone::UTC);
-                if (currentDate >= endOfYear)
-                    break;
-            }
-
-            icalrecur_iterator_free(rit);
+        // Liste mit EXDATEs vorbereiten
+        QSet<QDate> excludedDates;
+        for (icalproperty* ex = icalcomponent_get_first_property(event, ICAL_EXDATE_PROPERTY);
+             ex != nullptr;
+             ex = icalcomponent_get_next_property(event, ICAL_EXDATE_PROPERTY))
+        {
+            icaltimetype exTime = icalproperty_get_exdate(ex);
+            QDate exDate(exTime.year, exTime.month, exTime.day);
+            excludedDates.insert(exDate);
         }
 
-        // Einzeltermine / RDATEs
-        if (!hasRRule || hasRDate) {
-            // Add DTSTART falls im Jahr und nicht durch EXDATE entfernt
-            QDate date(dtstartUtc.year, dtstartUtc.month, dtstartUtc.day);
-            if (date.year() == year) {
-                bool excluded = false;
-                for (icalproperty* exdateProp = icalcomponent_get_first_property(comp, ICAL_EXDATE_PROPERTY);
-                     exdateProp != nullptr;
-                     exdateProp = icalcomponent_get_next_property(comp, ICAL_EXDATE_PROPERTY)) {
+        if (rruleProp) {
+            icalrecurrencetype rrule = icalproperty_get_rrule(rruleProp);
+            recurIter = icalrecur_iterator_new(rrule, dtstart);
 
-                    icaltimetype ex = icalproperty_get_exdate(exdateProp);
-                    ex = icaltime_convert_to_zone(ex, berlinTz);
-                    QDate exdate(ex.year, ex.month, ex.day);
-                    if (date == exdate) {
-                        excluded = true;
-                        break;
-                    }
+            if (!recurIter) continue;
+
+            icaltimetype occ;
+            while (!(icaltime_is_null_time(occ = icalrecur_iterator_next(recurIter)))) {
+                for (int i = 0; i < durationDays; ++i) {
+                    QDate occDate = QDate(occ.year, occ.month, occ.day).addDays(i);
+                    if (occDate.year() == year && !excludedDates.contains(occDate))
+                        dateSet.insert(occDate);
                 }
-                if (!excluded)
-                    result.append(date);
             }
 
-            // RDATE
-            for (icalproperty* rdateProp = icalcomponent_get_first_property(comp, ICAL_RDATE_PROPERTY);
-                 rdateProp != nullptr;
-                 rdateProp = icalcomponent_get_next_property(comp, ICAL_RDATE_PROPERTY)) {
+            icalrecur_iterator_free(recurIter);
+        } else {
+            // Kein RRULE: Einzelereignis
+            for (int i = 0; i < durationDays; ++i) {
+                QDate date(dtstart.year, dtstart.month, dtstart.day);
+                QDate occDate = date.addDays(i);
+                if (occDate.year() == year && !excludedDates.contains(occDate))
+                    dateSet.insert(occDate);
+            }
+        }
 
-                struct icaldatetimeperiodtype dtp = icalproperty_get_rdate(rdateProp);
-                icaltimetype rdate = icaltime_convert_to_zone(dtp.time, berlinTz);
-                QDate rdateQ(rdate.year, rdate.month, rdate.day);
-
-                if (rdateQ.year() == year)
-                    result.append(rdateQ);
+        // Zusätzliche einzelne RDATEs
+        for (icalproperty* rdateProp = icalcomponent_get_first_property(event, ICAL_RDATE_PROPERTY);
+             rdateProp != nullptr;
+             rdateProp = icalcomponent_get_next_property(event, ICAL_RDATE_PROPERTY))
+        {
+            icaldatetimeperiodtype dtperiod = icalproperty_get_rdate(rdateProp);
+            if (!icaltime_is_null_time(dtperiod.time)) {
+                icaltimetype rdate = dtperiod.time;
+                for (int i = 0; i < durationDays; ++i) {
+                    QDate occDate(rdate.year, rdate.month, rdate.day);
+                    occDate = occDate.addDays(i);
+                    if (occDate.year() == year && !excludedDates.contains(occDate))
+                        dateSet.insert(occDate);
+                }
             }
         }
     }
 
-    icalcomponent_free(root);
-    return result;
+    // Ergebnis übertragen
+    resultDates = QList<QDate>(dateSet.begin(), dateSet.end());
+    std::sort(resultDates.begin(), resultDates.end());
+
+    return resultDates;
 }
