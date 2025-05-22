@@ -22,7 +22,7 @@ DEFINES += APP_NAME=\\\"$$QMAKE_TARGET_PRODUCT\\\"
 DEFINES += APP_DOMAIN=\\\"t2ft.de\\\"
 
 SOURCES += \
-    calendarday.cpp \
+    caldaygraphicsitem.cpp \
     calendarevent.cpp \
     importedcalendar.cpp \
     main.cpp \
@@ -36,7 +36,7 @@ SOURCES += \
     zoomview.cpp
 
 HEADERS += \
-    calendarday.h \
+    caldaygraphicsitem.h \
     calendarevent.h \
     importedcalendar.h \
     mainwidget.h \

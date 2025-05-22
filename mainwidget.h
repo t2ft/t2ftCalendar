@@ -24,7 +24,7 @@ class MainWidget;
 QT_END_NAMESPACE
 
 class QGraphicsScene;
-class CalendarDay;
+class CalDayGraphicsItem;
 class QNetworkAccessManager;
 class QNetworkReply;
 class SchoolVacations;
@@ -74,7 +74,7 @@ private:
     QSizeF                      m_startSize;
     QPointF                     m_startPosition;
     QGraphicsScene              *m_scene;
-    QList<CalendarDay*>         m_days;
+    QList<CalDayGraphicsItem*>         m_days;
     QNetworkAccessManager       *m_accessManager;
     RequestState                m_requestState;
     PublicHolidays              *m_holidays;

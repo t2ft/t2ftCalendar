@@ -1,7 +1,7 @@
 // ***************************************************************************
 // <project description>
 // ---------------------------------------------------------------------------
-// calendarday.h
+// caldaygraphicsitem.h
 // <file description>
 // ---------------------------------------------------------------------------
 // Copyright (C) 2025 by t2ft - Thomas Thanner
@@ -10,8 +10,8 @@
 // ---------------------------------------------------------------------------
 // 2025-5-10  tt  Initial version created
 // ***************************************************************************
-#ifndef CALENDARDAY_H
-#define CALENDARDAY_H
+#ifndef CALDAYGRAPHICSITEM_H
+#define CALDAYGRAPHICSITEM_H
 
 #include <QGraphicsItem>
 #include <QDate>
@@ -21,10 +21,10 @@
 #include <QTextOption>
 #include <QLineF>
 
-class CalendarDay : public QGraphicsItem
+class CalDayGraphicsItem : public QGraphicsItem
 {
 public:
-    CalendarDay(const QDate &date, const QRectF &rect, const QString &holidayName, bool isPublicHoliday, bool isVacation, QGraphicsItem *parent = nullptr);
+    CalDayGraphicsItem(const QDate &date, const QRectF &rect, const QString &holidayName, bool isPublicHoliday, bool isVacation, QGraphicsItem *parent = nullptr);
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
@@ -56,4 +56,4 @@ private:
     QList<QColor>   m_events;
 };
 
-#endif // CALENDARDAY_H
+#endif // CALDAYGRAPHICSITEM_H

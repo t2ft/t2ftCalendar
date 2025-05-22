@@ -13,7 +13,7 @@
 #include "mainwidget.h"
 #include "ui_mainwidget.h"
 #include "mouseeventfilter.h"
-#include "calendarday.h"
+#include "caldaygraphicsitem.h"
 #include "schoolvacations.h"
 #include "publicholydays.h"
 #include "tpowereventfilter.h"
@@ -360,7 +360,7 @@ void MainWidget::onReplyFinished(QNetworkReply *reply)
             if (m_holidays!=nullptr) {
                 m_holidays->isHoliday(date, holidayName, isPublic);
             }
-            CalendarDay *d = new CalendarDay(date, rc2, holidayName, isPublic, isVacation);
+            CalDayGraphicsItem *d = new CalDayGraphicsItem(date, rc2, holidayName, isPublic, isVacation);
             m_scene->addItem(d);
             m_days.append(d);
             rc2.moveTop(rc2.bottom()+2);

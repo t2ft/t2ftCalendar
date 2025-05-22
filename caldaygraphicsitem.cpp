@@ -1,7 +1,7 @@
 // ***************************************************************************
 // <project description>
 // ---------------------------------------------------------------------------
-// calendarday.cpp
+// caldaygraphicsitem.cpp
 // <file description>
 // ---------------------------------------------------------------------------
 // Copyright (C) 2025 by t2ft - Thomas Thanner
@@ -10,11 +10,11 @@
 // ---------------------------------------------------------------------------
 // 2025-5-10  tt  Initial version created
 // ***************************************************************************
-#include "calendarday.h"
+#include "caldaygraphicsitem.h"
 #include <QPainter>
 
 
-CalendarDay::CalendarDay(const QDate &date, const QRectF &rect, const QString &holidayName, bool isPublicHoliday, bool isVacation, QGraphicsItem *parent)
+CalDayGraphicsItem::CalDayGraphicsItem(const QDate &date, const QRectF &rect, const QString &holidayName, bool isPublicHoliday, bool isVacation, QGraphicsItem *parent)
     : QGraphicsItem(parent),
     m_date(date),
     m_rect(rect),
@@ -86,12 +86,12 @@ CalendarDay::CalendarDay(const QDate &date, const QRectF &rect, const QString &h
 }
 
 
-QRectF CalendarDay::boundingRect() const
+QRectF CalDayGraphicsItem::boundingRect() const
 {
     return m_rect;
 }
 
-void CalendarDay::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
+void CalDayGraphicsItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
     Q_UNUSED(option);
     Q_UNUSED(widget);
@@ -128,7 +128,7 @@ void CalendarDay::paint(QPainter* painter, const QStyleOptionGraphicsItem* optio
     }
 }
 
-void CalendarDay::setEvents(const QStringList &colors)
+void CalDayGraphicsItem::setEvents(const QStringList &colors)
 {
     m_events.clear();
     for (const auto &c : colors) {
@@ -137,7 +137,7 @@ void CalendarDay::setEvents(const QStringList &colors)
     update();
 }
 
-void CalendarDay::updateDay(const QDate &date)
+void CalDayGraphicsItem::updateDay(const QDate &date)
 {
     if (m_date==date) {
         m_penBorder.setStyle(Qt::SolidLine);
