@@ -70,3 +70,6 @@ RC_ICONS = res/t2ftCalendar.ico
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    ReadMe.md
