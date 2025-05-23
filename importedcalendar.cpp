@@ -32,13 +32,16 @@ ImportedCalendar::ImportedCalendar(QObject *parent)
     qDebug() << "--- ImportedCalendar::ImportedCalendar()";
 }
 
-ImportedCalendar::ImportedCalendar(int year, const QString &link, qint64 updateSeconds, QObject *parent)
+ImportedCalendar::ImportedCalendar(int year, const QString &link, qint64 updateSeconds, const QString &defaultColor, const QString &defaultName, const QString &forcedColor, QObject *parent)
     : QObject(parent)
     , m_year(year)
     , m_link(link)
     , m_updatePeriod(updateSeconds)
     , m_updateTimer(nullptr)
     , m_accessManager(nullptr)
+    , m_defaultColor(defaultColor)
+    , m_forcedColor(forcedColor)
+    , m_defaultName(defaultName)
 {
     qDebug() << "+++ ImportedCalendar::ImportedCalendar(link =" << link << "updateSeconds =" << updateSeconds << ")";
     update();
@@ -184,6 +187,8 @@ QList<CalendarEvent> ImportedCalendar::extractAllDatesForYear(const QByteArray &
     }
 
     // VCALENDAR-Level Properties durchgehen
+    m_color = m_forcedColor.isEmpty() ? m_defaultColor : m_forcedColor;
+    m_name = m_defaultName;
     for (icalproperty* prop = icalcomponent_get_first_property(calendar, ICAL_ANY_PROPERTY);
          prop != nullptr;
          prop = icalcomponent_get_next_property(calendar, ICAL_ANY_PROPERTY)) {
@@ -195,17 +200,13 @@ QList<CalendarEvent> ImportedCalendar::extractAllDatesForYear(const QByteArray &
             const char* value = icalproperty_get_value_as_string(prop);
             if (qstricmp(propName, "X-WR-CALNAME") == 0) {
                 m_name = QString::fromUtf8(value);
-                qDebug() << "Kalender-Name:" << m_name;
-            } else if (qstricmp(propName, "X-APPLE-CALENDAR-COLOR") == 0) {
+            } else if (m_forcedColor.isEmpty() && (qstricmp(propName, "X-APPLE-CALENDAR-COLOR") == 0)) {
                 m_color = QString::fromUtf8(value).left(7);
-                qDebug() << "Kalender-Farbe:" << m_color;
             }
         }
     }
-    if (m_color.isEmpty()) {
-        // default to bright red, if no color is given in ICAL data
-        m_color = "#FF0000";
-    }
+    qDebug() << "Kalender-Name:" << m_name;
+    qDebug() << "Kalender-Farbe:" << m_color;
 
     // Durchlaufe alle VEVENT-Komponenten
     for (icalcomponent* event = icalcomponent_get_first_component(calendar, ICAL_VEVENT_COMPONENT);

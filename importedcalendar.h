@@ -27,7 +27,7 @@ class ImportedCalendar : public QObject
 
 public:
     explicit ImportedCalendar(QObject *parent = nullptr);
-    ImportedCalendar(int year, const QString &link, qint64 updateSeconds, QObject *parent = nullptr);
+    ImportedCalendar(int year, const QString &link, qint64 updateSeconds, const QString &defaultColor, const QString &defaultName = QString(), const QString &forcedColor = QString(), QObject *parent = nullptr);
     ~ImportedCalendar();
 
     void setLink(const QString &link);
@@ -63,7 +63,10 @@ protected:
     QTimer                  *m_updateTimer;
     QNetworkAccessManager   *m_accessManager;
     QString                 m_color;
+    QString                 m_defaultColor;
+    QString                 m_forcedColor;
     QString                 m_name;
+    QString                 m_defaultName;
 };
 
 #endif // IMPORTEDCALENDAR_H

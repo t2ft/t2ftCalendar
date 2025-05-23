@@ -62,10 +62,10 @@ private:
     } RequestState;
 
     void createCalendar();
+    void createDays();
     void updateCalendarYearly(const QDate &date);
     void updateCalendarDaily(const QDate &date);
     QPointF centered(const QRectF &a, const QRectF &b);
-    void appendEvent(const ImportedCalendar *ical, const QDate &date, QList<CalendarEvent> &events);
 
     Ui::MainWidget *ui;
 
@@ -78,10 +78,7 @@ private:
     QTimer                      *m_timerUpdate;
     QDate                       m_currentDate;
     QDate                       m_workDate;
-    ImportedCalendar            *m_icalSTK;
-    ImportedCalendar            *m_icalThomas;
-    ImportedCalendar            *m_icalT2ft;
-    ImportedCalendar            *m_icalHnF;
-    ImportedCalendar            *m_icalHoS;
+    QList<ImportedCalendar*>    m_iCals;
+    QString                     m_bundesland;
 };
 #endif // MAINWIDGET_H

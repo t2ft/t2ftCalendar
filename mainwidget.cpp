@@ -32,9 +32,13 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QAbstractEventDispatcher>
+#include <QDir>
 
 #define CFG_GRP_WINDOW  "TWindow"
 #define CFG_GEOMETRY    "geometry"
+
+#define CFG_CONFIGFILE  "ConfigFile"
+
 
 #ifdef QT_DEBUG
 static const Qt::WindowFlags wf = Qt::FramelessWindowHint | Qt::Tool;
@@ -53,23 +57,42 @@ MainWidget::MainWidget(QWidget *parent)
     , m_timerUpdate(nullptr)
     , m_currentDate(QDate::currentDate())
     , m_workDate(m_currentDate)
-    , m_icalSTK(   new ImportedCalendar(m_currentDate.year(), "https://rest.konzertmeister.app/api/v1/ical/d7ede305-dd3d-49d7-af71-4574cd109f06?hideNegative=true&excludeMeetingPoints=true&onlyExternal=false", 3600))
-    , m_icalThomas(new ImportedCalendar(m_currentDate.year(), "https://thblue.my-gateway.de/remote.php/dav/public-calendars/gTws6bpLTNrMqyoa?export",                                                            3907))
-    , m_icalT2ft(  new ImportedCalendar(m_currentDate.year(), "https://thblue.my-gateway.de/remote.php/dav/public-calendars/yfEBqz5pwJ6t2saC?export",                                                            4211))
-    , m_icalHnF(   new ImportedCalendar(m_currentDate.year(), "https://thblue.my-gateway.de/remote.php/dav/public-calendars/b2tesWXFD8zK89kH?export",                                                            4513))
-    , m_icalHoS(   new ImportedCalendar(m_currentDate.year(), "https://thblue.my-gateway.de/remote.php/dav/public-calendars/axpyXR4mSCTiHToX?export",                                                            4817))
+
 {
     // allow us to dispatch windows power events
     TPowerEventFilter *pFilter = new TPowerEventFilter(this);
     QAbstractEventDispatcher::instance()->installNativeEventFilter(pFilter);
     connect(pFilter, &TPowerEventFilter::ResumeSuspend, this, &MainWidget::updateCalendar);
 
-    connect(m_icalSTK,    &ImportedCalendar::newEntries, this, &MainWidget::onNewCalendarEntries);
-    connect(m_icalThomas, &ImportedCalendar::newEntries, this, &MainWidget::onNewCalendarEntries);
-    connect(m_icalT2ft,   &ImportedCalendar::newEntries, this, &MainWidget::onNewCalendarEntries);
-    connect(m_icalHnF,    &ImportedCalendar::newEntries, this, &MainWidget::onNewCalendarEntries);
-    connect(m_icalHoS,    &ImportedCalendar::newEntries, this, &MainWidget::onNewCalendarEntries);
+    // get configuration of Bundesland and imported calendars from file
+    QSettings set;
+    QString cfgFile = QDir::fromNativeSeparators(set.value(CFG_CONFIGFILE, "./t2ftcalendar.cfg").toString());
+    qDebug() << "reading configuration from:" << cfgFile;
+    QSettings cfg(cfgFile, QSettings::IniFormat);
+    m_bundesland = cfg.value("Bundesland").toString();
+    qDebug() << "Bundesland=" << m_bundesland;
+    int n=1;
+    while(true) {
+        qDebug().nospace() << "Calendar #" << n;
+        QString url = cfg.value(QString("URL%1").arg(n)).toString();
+        if (url.isEmpty()) {
+            break;
+        }
+        QString defaultColor = cfg.value(QString("DefaultColor%1").arg(n), "#FF0000").toString();
+        QString forcedColor = cfg.value(QString("ForcedColor%1").arg(n)).toString();
+        qint64 interval = cfg.value(QString("UpdateInterval%1").arg(n), 3600).toLongLong();
+        QString defaultName = cfg.value(QString("DefaultName%1").arg(n), QString("Calendar#%1").arg(n)).toString();
+        ImportedCalendar *cal = new ImportedCalendar(m_currentDate.year(), url, interval, defaultColor, defaultName, forcedColor, this);
+        connect(cal, &ImportedCalendar::newEntries, this, &MainWidget::onNewCalendarEntries);
+        m_iCals << cal;
+        ++n;
+        qDebug() << "  URL          =" << url;
+        qDebug() << "  defaultName  =" << defaultName;
+        qDebug() << "  defaultColor =" << defaultColor << "; forcedColor=" << forcedColor;
+        qDebug() << "  interval     =" << interval;
+    }
 
+    // init GUI
     ui->setupUi(this);
     connect(ui->graphicsView, &ZoomView::mouseMove, this, &MainWidget::onMouseMove);
     connect(ui->graphicsView, &ZoomView::mouseResize, this, &MainWidget::onMouseResize);
@@ -104,11 +127,6 @@ MainWidget::~MainWidget()
     delete ui;
     delete m_vacations;
     delete m_holidays;
-    delete m_icalSTK;
-    delete m_icalThomas;
-    delete m_icalT2ft;
-    delete m_icalHnF;
-    delete m_icalHoS;
 }
 
 void MainWidget::closeEvent(QCloseEvent *event)
@@ -224,11 +242,14 @@ void MainWidget::onNewCalendarEntries()
 //    qDebug() << "+++ MainWidget::onNewCalendarEntries()";
     for (auto &d : m_days) {
         QList<CalendarEvent> events;
-        appendEvent(m_icalSTK,    d->date(), events);
-        appendEvent(m_icalThomas, d->date(), events);
-        appendEvent(m_icalT2ft,   d->date(), events);
-        appendEvent(m_icalHnF,    d->date(), events);
-        appendEvent(m_icalHoS,    d->date(), events);
+        for (auto &c : m_iCals) {
+            if (c) {
+                CalendarEvent e = c->entry(d->date());
+                if (e.isValid()) {
+                    events.append(e);
+                }
+            }
+        }
         d->setEvents(events);
     }
 //    qDebug() << "--- MainWidget::onNewCalendarEntries()";
@@ -247,18 +268,6 @@ void MainWidget::onMouseMove(QPoint pt)
     move(pt);
     qDebug() << "--- MainWidget::onMouseMove()";
 }
-
-void MainWidget::appendEvent(const ImportedCalendar *ical, const QDate &date, QList<CalendarEvent> &events)
-{
-    if (ical) {
-        CalendarEvent e = ical->entry(date);
-        if (e.isValid()) {
-            events.append(e);
-        }
-    }
-}
-
-
 
 void MainWidget::updateCalendarYearly(const QDate &date)
 {
@@ -282,11 +291,50 @@ void MainWidget::updateCalendarYearly(const QDate &date)
 
     m_accessManager = new QNetworkAccessManager(this);
     connect(m_accessManager, &QNetworkAccessManager::finished, this, &MainWidget::onReplyFinished);
-    m_requestState = RequestLastYearsVacations;
-    QString url = QString("https://ferien-api.de/api/v1/holidays/BY/%1").arg(m_workDate.year()-1);
-    qDebug() << "*** requesting last year's school holidays:" << url;
-    m_accessManager->get(QNetworkRequest(QUrl(url)));
+    if (!m_bundesland.isEmpty()) {
+        m_requestState = RequestLastYearsVacations;
+        QString url = QString("https://ferien-api.de/api/v1/holidays/%1/%2").arg(m_bundesland).arg(m_workDate.year()-1);
+        qDebug() << "*** requesting last year's school holidays:" << url;
+        m_accessManager->get(QNetworkRequest(QUrl(url)));
+    } else {
+        m_requestState = RequestIdle;
+        createDays();
+    }
     qDebug() << "--- MainWidget::updateCalendarYearly()";
+}
+
+void MainWidget::createDays()
+{
+    qDebug() << "creating days...";
+    // create new days
+    QRectF rc1, rc2;
+    // draw all of the days
+    QDate date(m_workDate.year(), 1, 1);
+    rc1.setRect(21, 37, 61, 32);
+    rc2 = rc1;
+    int month = date.month();
+    while (date.year()==m_workDate.year()) {
+        if (month != date.month()) {
+            month = date.month();
+            rc1.moveLeft(rc1.right()+2);
+            rc2 = rc1;
+        }
+        bool isVacation = false;
+        if (m_vacations!=nullptr) {
+            isVacation = !m_vacations->checkVacation(date).isEmpty();
+        }
+        QString holidayName;
+        bool isPublic = false;
+        if (m_holidays!=nullptr) {
+            m_holidays->isHoliday(date, holidayName, isPublic);
+        }
+        CalDayGraphicsItem *d = new CalDayGraphicsItem(date, rc2, holidayName, isPublic, isVacation);
+        m_scene->addItem(d);
+        m_days.append(d);
+        rc2.moveTop(rc2.bottom()+2);
+        date = date.addDays(1);
+    }
+    updateCalendarDaily(m_workDate);
 }
 
 void MainWidget::onReplyFinished(QNetworkReply *reply)
@@ -321,7 +369,7 @@ void MainWidget::onReplyFinished(QNetworkReply *reply)
                     // request public holidays next
                     m_requestState = RequestHolidays;
                     qDebug() << "*** requesting public holidays";
-                    m_accessManager->get(QNetworkRequest(QUrl(QString("https://feiertage-api.de/api/?jahr=%1&nur_land=BY").arg(m_workDate.year()))));
+                    m_accessManager->get(QNetworkRequest(QUrl(QString("https://feiertage-api.de/api/?jahr=%1&nur_land=%2").arg(m_workDate.year()).arg(m_bundesland))));
                 } else {
                     qWarning() << "!!! m_vacations is a nullptr";
                 }
@@ -355,36 +403,7 @@ void MainWidget::onReplyFinished(QNetworkReply *reply)
         m_requestState = RequestIdle;
     }
     if (m_requestState==RequestIdle) {
-        qDebug() << "creating days...";
-        // create new days
-        QRectF rc1, rc2;
-        // draw all of the days
-        QDate date(m_workDate.year(), 1, 1);
-        rc1.setRect(21, 37, 61, 32);
-        rc2 = rc1;
-        int month = date.month();
-        while (date.year()==m_workDate.year()) {
-            if (month != date.month()) {
-                month = date.month();
-                rc1.moveLeft(rc1.right()+2);
-                rc2 = rc1;
-            }
-            bool isVacation = false;
-            if (m_vacations!=nullptr) {
-                isVacation = !m_vacations->checkVacation(date).isEmpty();
-            }
-            QString holidayName;
-            bool isPublic = false;
-            if (m_holidays!=nullptr) {
-                m_holidays->isHoliday(date, holidayName, isPublic);
-            }
-            CalDayGraphicsItem *d = new CalDayGraphicsItem(date, rc2, holidayName, isPublic, isVacation);
-            m_scene->addItem(d);
-            m_days.append(d);
-            rc2.moveTop(rc2.bottom()+2);
-            date = date.addDays(1);
-        }
-        updateCalendarDaily(m_workDate);
+        createDays();
     }
     qDebug() << "--- MainWidget::onReplyFinished()";
 }
