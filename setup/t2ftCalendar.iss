@@ -31,8 +31,8 @@
 #define myAppVersion GetVersionNumbersString(AddBackslash(deployDir) + myAppExeName)
 #define myWizardSmallImageFile  "res\t2ft_logo.bmp"
 #define myWizardImageFile       "res\" + myAppBaseName + "_base.png"
-#define docDir ""
-#define manualFile ""
+#define docDir "D:\tt\Documents\t2ft\000_Projekte\Eigene\Programme\t2ftCalendar"
+#define manualFile "ReadMe.md"
 
 ; define this to the number applications that have to be closed before uninstall
 ; or do not define anything if there are none
@@ -176,7 +176,7 @@ Source: "qt.conf"; DestDir: "{app}"; Flags: sharedfile overwritereadonly restart
 ; other files
 Source: "LICENSE"; DestDir: "{app}"; Flags: ignoreversion sharedfile uninsnosharedfileprompt
 ;Source: "..\changelog.txt"; DestDir: "{app}"; Flags: ignoreversion sharedfile uninsnosharedfileprompt
-;Source: {#docDir}\{#manualFile}; DestDir: "{app}"; Flags: ignoreversion sharedfile uninsnosharedfileprompt
+Source: {#docDir}\{#manualFile}; DestDir: "{app}"; Flags: ignoreversion sharedfile uninsnosharedfileprompt
 
 [Dirs]
 

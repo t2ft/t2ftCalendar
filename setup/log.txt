@@ -75,7 +75,9 @@ Parsing [Files] section, line 172
 Parsing [Files] section, line 174
    Reading version info: D:\tt\Documents\t2ft\000_Projekte\Eigene\Programme\t2ftCalendar\setup\qt.conf
 Parsing [Files] section, line 177
+Parsing [Files] section, line 179
 Compiling [Code] section
+Deleting t2ftCalendar-1.0.2.5.exe from output directory
 Creating setup files
    Updating icons (SETUP.EXE)
    Compressing: D:\tt\Documents\t2ft\000_Projekte\Eigene\Programme\t2ftCalendar\setup\deploy\\D3Dcompiler_47.dll
@@ -139,6 +141,7 @@ Creating setup files
    Compressing: D:/tt/Documents/t2ft/000_Projekte/Eigene/Programme/libical/libical-3.0.20/build/bin/libical.dll
    Compressing: D:\tt\Documents\t2ft\000_Projekte\Eigene\Programme\t2ftCalendar\setup\qt.conf
    Compressing: D:\tt\Documents\t2ft\000_Projekte\Eigene\Programme\t2ftCalendar\setup\LICENSE
+   Compressing: D:\tt\Documents\t2ft\000_Projekte\Eigene\Programme\t2ftCalendar\ReadMe.md
    Compressing Setup program executable
    Updating version info (SETUP.EXE)
    Updating manifest (SETUP.EXE)
@@ -151,5 +154,5 @@ Warning: Line 673, Column 3: [Hint] Variable 'RES' never used
 Warning: Line 825, Column 3: [Hint] Variable 'X' never used
 Warning: Line 807, Column 3: [Hint] Variable 'XTCDIRPAGE' never used
 
-Successful compile (16,672 sec). Resulting Setup program filename is:
-D:\tt\Documents\t2ft\000_Projekte\Eigene\Programme\t2ftCalendar\setup\t2ftCalendar-1.0.1.4.exe
+Successful compile (18,625 sec). Resulting Setup program filename is:
+D:\tt\Documents\t2ft\000_Projekte\Eigene\Programme\t2ftCalendar\setup\t2ftCalendar-1.0.2.5.exe
