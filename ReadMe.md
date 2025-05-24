@@ -7,6 +7,8 @@ Ein Jahreskalender für den Desktop
 t2ftCalendar ist ein einfacher Jahreskalender für das aktuelle Jahr. Es gibt eine Spalte für jeden Monat und eine Zeile für jeden Tag.
 Weiterhin werden die Kalenderwochen angezeigt.
 
+![grafik](https://github.com/user-attachments/assets/53720d60-7b79-4fdc-ae75-b945147d3841)
+
 Es wird jede Stunde und beim Aufwachen aus einem 
 Stromsparmodus geprüft, ob sich das Jahr geändert hat. Ist das der Fall wird der Kalender für das neue Jahr erzeugt und angezeigt.
 
