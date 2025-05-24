@@ -1,9 +1,0 @@
-<Configuration>
-	<Networking>Disable</Networking>
-	<MappedFolders>
-		<MappedFolder>
-			<HostFolder>D:\tt\Documents\t2ft\000_Projekte\Eigene\Programme\t2ftCalendar\setup</HostFolder>
-			<ReadOnly>true</ReadOnly>
-		</MappedFolder>
-	</MappedFolders>
-</Configuration>
